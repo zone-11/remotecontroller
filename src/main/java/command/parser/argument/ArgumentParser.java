@@ -1,9 +1,8 @@
-package command.argumentparser;
+package command.parser.argument;
 
-public interface ArgumentParser<T> {
+import command.parser.Parser;
 
-    public T parse(String arg);
-
+public interface ArgumentParser<T> extends Parser<T> {
     public boolean canParse(String context);
 
 }
