@@ -1,19 +1,19 @@
 package command.parser;
 
-import command.RemoteCommand;
+import command.Command;
 
 import java.util.Optional;
 
-public abstract class CommandParser implements Parser<RemoteCommand> {
+public abstract class CommandParser implements Parser<Command> {
 
     private CommandParser next;
 
     @Override
-    public RemoteCommand parse(String context) {
+    public Command parse(String context) {
         return Optional.ofNullable(hookParse(context))
                 .orElseGet(() -> next.parse(context));
     }
 
-    protected abstract RemoteCommand hookParse(String context);
+    protected abstract Command hookParse(String context);
 
 }

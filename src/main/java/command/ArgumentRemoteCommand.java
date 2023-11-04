@@ -2,7 +2,7 @@ package command;
 
 import command.parser.argument.ArgumentParser;
 
-public abstract class ArgumentRemoteCommand<T> implements RemoteCommand {
+public abstract class ArgumentRemoteCommand<T> implements Command {
 
     protected T argument;
 

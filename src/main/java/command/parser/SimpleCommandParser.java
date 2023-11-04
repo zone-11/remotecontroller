@@ -1,12 +1,12 @@
 package command.parser;
 
-import command.RemoteCommand;
+import command.Command;
 
 public class SimpleCommandParser extends CommandParser {
 
     @Override
-    protected RemoteCommand hookParse(String context) {
-        return RemoteCommand.forCommandName(context);
+    protected Command hookParse(String context) {
+        return Command.forCommandName(context);
     }
 
 }
