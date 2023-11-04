@@ -1,6 +1,7 @@
 package command;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public interface Command {
 
@@ -15,7 +16,7 @@ public interface Command {
 
    void removeCommand(Command command);
 
-   boolean hasCommand(Command command);
+   Optional<Command> getChildCommand(String commandName);
 
 
 
@@ -23,8 +24,8 @@ public interface Command {
       commands.put(command.getName(), command);
    }
 
-   public static Command forCommandName(String name) {
-      return commands.get(name);
+   public static Optional<Command> findByName(String name) {
+      return Optional.ofNullable(commands.get(name));
    }
 
 }
