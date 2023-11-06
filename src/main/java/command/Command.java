@@ -7,7 +7,6 @@ public interface Command {
 
    static HashMap<String, Command> commands = new HashMap<>();
 
-
    void execute();
 
    String getName();
@@ -21,7 +20,7 @@ public interface Command {
 
 
    public static void add(Command command) {
-      commands.put(command.getName(), command);
+      commands.put(command.getName(), command); 
    }
 
    public static Optional<Command> findByName(String name) {

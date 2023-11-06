@@ -1,9 +1,16 @@
 package command.converter;
 
 import command.Command;
+import command.separater.CommandSeparater;
 
-public interface CommandConverter {
+public abstract class CommandConverter {
 
-    Command parse(String inputLine);
+    public Command parse(String inputLine) {
+		return null;
+	}
+
+	protected abstract Command hookParse(String[] separateLine);
+
+	protected abstract CommandSeparater createSeparater();
 
 }
