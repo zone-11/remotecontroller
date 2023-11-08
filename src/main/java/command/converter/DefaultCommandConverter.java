@@ -1,28 +1,27 @@
 package command.converter;
 
 import command.commands.ArgumentCommand;
+import command.commands.PrintCommand;
+import command.commands.SimpleCompositeCommand;
 import command.Command;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class DefaultCommandConverter implements CommandConverter {
+public class DefaultCommandConverter extends CommandConverter {
 
     Pattern commandPartPattern = Pattern.compile("(\".*\"|\\S+)\\s+");
 
     @Override
-    public Command parse(String inputLine) {
-        Matcher matcher = commandPartPattern.matcher(inputLine + " ");
-        List<String> commands = matcher.results()
-                .map(result -> result.group(1))
-                .toList();
-        String commandPart = commands.get(commands.size() - 1);
+    public Command hookParse(List<String> commandParts) {
         Command parent = null;
+		String commandPart = commandParts.get(commandParts.size() - 1);
 
-        if (commands.size() > 1) {
-            parent = parse(inputLine.substring(0, inputLine.length() - commandPart.length()));
+		System.out.println(commandPart);
+
+        if (commandParts.size() > 1) {
+            parent = hookParse(commandParts.subList(0, commandParts.size() - 1));
         } else {
             return Command.findByName(commandPart).orElseThrow();
         }
@@ -33,7 +32,17 @@ public class DefaultCommandConverter implements CommandConverter {
         }
         return parent.getChildCommand(commandPart).orElseThrow();
     }
-    public static void main(String[] args) {}
 
+
+
+    public static void main(String[] args) {
+		Command.add(new PrintCommand(1, new SimpleCompositeCommand()));
+
+		CommandConverter converter = new DefaultCommandConverter();
+		Command command = converter.parse("print \"Hello world\"");
+
+		command.execute();
+		System.out.println("COMPLETE");
+	}
 }
 

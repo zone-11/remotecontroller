@@ -1,7 +1,9 @@
 package command.separater;
 
+import java.util.List;
+
 public interface CommandSeparater {
 
-	String[][] separate(String inputLine);
+	List<List<String>> separate(String inputLine);
 	
 }
