@@ -1,7 +1,7 @@
 package command.commands;
 
 import command.Command;
-import command.parser.ArgumentParser;
+import command.argument.parser.ArgumentParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,21 +11,21 @@ public abstract class ArgumentCommand<T> implements Command {
 
     protected List<T> arguments;
 	private Command command;
+	private ArgumentParser<T> argumentParser;
 
-    public ArgumentCommand(int argsQuantity, Command command) {
+    public ArgumentCommand(int argsQuantity, Command command, ArgumentParser<T> argumentParser) {
         arguments = new ArrayList<>(argsQuantity);
 		this.command = command;
+		this.argumentParser = argumentParser;
     }
 
     public void addArgument(String argumentText) {
 		try {
-			arguments.add(getArgumentParser().parse(argumentText));
+			arguments.add(argumentParser.parse(argumentText));
 		} catch (RuntimeException err) {
 			throw new IllegalArgumentException(err);
 		}
     }
-
-    protected abstract ArgumentParser<T> getArgumentParser();
 
 	@Override
 	public void addCommand(Command command) {
