@@ -1,9 +1,7 @@
-package command.parser.argument;
+package command.argument.parser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import command.parser.ArgumentParser;
 
 public class StringArgumentParser implements ArgumentParser<String> {
 

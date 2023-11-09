@@ -1,8 +1,8 @@
-package command.separater;
+package command.separator;
 
 import java.util.List;
 
-public interface CommandSeparater {
+public interface CommandSeparator {
 
 	List<List<String>> separate(String inputLine);
 	
