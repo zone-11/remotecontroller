@@ -13,7 +13,10 @@ public abstract class CommandConverter {
     public Command parse(String inputLine) {
 		SimpleCompositeCommand composite = new SimpleCompositeCommand();
 
-		createSeparater().separate(inputLine).forEach(this::hookParse);
+		createSeparater().separate(inputLine).forEach(command -> {
+			composite.addCommand(hookParse(command));
+		});
+
 
 		return composite;
 	}
