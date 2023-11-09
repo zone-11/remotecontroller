@@ -1,10 +1,12 @@
 package command.commands;
 
+import command.Command;
+
 public class SimpleCompositeCommand extends AbstractCompositeCommand {
 
 	@Override
 	public void execute() {
-		childs.values().forEach(command -> command.execute());
+		childs.values().forEach(Command::execute);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class StringArgumentParser implements ArgumentParser<String> {
         if (matcher.matches()) {
             return matcher.group(1);
         }
-        return context;
+        throw new IllegalArgumentException("Expects string argument");
     }
 
     public boolean canParse(String context) {
