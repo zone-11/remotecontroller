@@ -18,7 +18,11 @@ public abstract class ArgumentCommand<T> implements Command {
     }
 
     public void addArgument(String argumentText) {
-        arguments.add(getArgumentParser().parse(argumentText));
+		try {
+			arguments.add(getArgumentParser().parse(argumentText));
+		} catch (RuntimeException err) {
+			throw new IllegalArgumentException(err);
+		}
     }
 
     protected abstract ArgumentParser<T> getArgumentParser();
@@ -29,7 +33,7 @@ public abstract class ArgumentCommand<T> implements Command {
 	}
 
 	@Override
-	public void removeCommand(Command commmand) {
+	public void removeCommand(Command command) {
 		this.command.removeCommand(command);
 	}
 
