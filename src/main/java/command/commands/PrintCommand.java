@@ -1,23 +1,19 @@
 package command.commands;
 
 import command.Command;
-import command.parser.ArgumentParser;
-import command.parser.argument.StringArgumentParser;
+import command.argument.parser.StringArgumentParser;
 
 public class PrintCommand extends ArgumentCommand<String> {
 
-	public PrintCommand(int argsQuantity, Command command) {
-		super(argsQuantity, command);
+	public PrintCommand(Command command) {
+		super(2, command, new StringArgumentParser());
 	}
 
 	@Override
 	public void execute() {
-		arguments.forEach(System.out::println);
-	}
-
-	@Override
-	public ArgumentParser<String> getArgumentParser() {
-		return new StringArgumentParser();
+		arguments.forEach(msg -> {
+			System.out.println("Message: " + msg);
+		});
 	}
 
 	@Override
@@ -26,3 +22,4 @@ public class PrintCommand extends ArgumentCommand<String> {
 	}
 
 }
+
