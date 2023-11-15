@@ -6,18 +6,19 @@ import java.util.List;
 public class CompositeArgumentParser implements ArgumentParser<Object> {
 
     private Iterator<ArgumentParser<?>> parserIterator;
+    private List<ArgumentParser<?>> parsers;
 
     public CompositeArgumentParser(List<ArgumentParser<?>> parsers) {
-        parserIterator = parsers.iterator();
+        parserIterator = parsers.listIterator();
+        this.parsers = parsers;
     }
 
     @Override
     public Object parse(String context) {
-        if (parserIterator.hasNext()) {
-            ArgumentParser<?> nextParser = parserIterator.next();
-            return nextParser.parse(context);
+        if (!parserIterator.hasNext()) {
+            parserIterator = parsers.listIterator();
         }
-        throw new IllegalArgumentException("argument: " + context + " does not exist");
+        return parserIterator.next().parse(context);
     }
 
 }

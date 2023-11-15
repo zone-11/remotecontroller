@@ -1,4 +1,4 @@
-package command.converter;
+package command.commands.converter;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -6,20 +6,16 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import command.Command;
-import command.commands.SimpleCompositeCommand;
+import command.commands.adapter.CommandPacket;
 import command.separator.CommandSeparator;
 
 public abstract class CommandConverter {
 
     public Command parse(String inputLine) {
-		SimpleCompositeCommand composite = new SimpleCompositeCommand();
-
-		createSeparator().separate(inputLine).forEach(command -> {
-			composite.addCommand(hookParse(command));
-		});
-
-
-		return composite;
+		return new CommandPacket(createSeparator()
+				.separate(inputLine).stream()
+				.map(this::hookParse)
+				.toList());
 	}
 
 	protected abstract Command hookParse(List<String> separateLine);

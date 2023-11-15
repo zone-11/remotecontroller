@@ -1,23 +1,24 @@
 package command.argument.parser;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringArgumentParser implements ArgumentParser<String> {
 
-    Pattern pattern = Pattern.compile("\"(.+)\"");
+    private static final Pattern STR_PATTERN = Pattern.compile("\"(.+)\"");
 
     public String parse(String context) {
-        Matcher matcher = pattern.matcher(context);
-
+        Matcher matcher = STR_PATTERN.matcher(context);
+        String toReturn = null;
         if (matcher.matches()) {
-            return matcher.group(1);
+            toReturn = matcher.group(1);
         }
-        throw new IllegalArgumentException("Expects string argument");
+        return toReturn;
     }
 
     public boolean canParse(String context) {
-        return pattern.matcher(context).matches();
+        return STR_PATTERN.matcher(context).matches();
     }
 
 }

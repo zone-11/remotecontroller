@@ -5,41 +5,50 @@ import command.argument.parser.ArgumentParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Consumer;
 
-public abstract class ArgumentCommand<T> implements Command {
+public class ArgumentCommand<T> extends CommandDecorator {
 
-    protected List<T> arguments;
-	private Command command;
-	private ArgumentParser<T> argumentParser;
+    private Consumer<List<T>> action;
+    private ArgumentParser<T> argParser;
+    private List<T> args = new ArrayList<>();
+    private int argsQuantity;
+    private int currentArgsQuantity = 0;
 
-    public ArgumentCommand(int argsQuantity, Command command, ArgumentParser<T> argumentParser) {
-        arguments = new ArrayList<>(argsQuantity);
-		this.command = command;
-		this.argumentParser = argumentParser;
+    public ArgumentCommand(Command command,
+                           ArgumentParser<T> argParser,
+                           Consumer<List<T>> action,
+                           int argsQuantity) {
+        super(command);
+        this.action = action;
+        this.argParser = argParser;
+        this.argsQuantity = argsQuantity;
     }
 
-    public void addArgument(String argumentText) {
-		try {
-			arguments.add(argumentParser.parse(argumentText));
-		} catch (RuntimeException err) {
-			throw new IllegalArgumentException(err);
-		}
+    @Override
+    public void execute() {
+        if (args.size() == argsQuantity
+            && argsQuantity == currentArgsQuantity) {
+           action.accept(args);
+        } else if (!(command instanceof ArgumentCommand<?>)
+                    && currentArgsQuantity > 0){
+            throw new IllegalArgumentException("command \"" + getName() + "\" does not take this arguments");
+        } else {
+            super.execute();
+        }
     }
 
-	@Override
-	public void addCommand(Command command) {
-		this.command.addCommand(command);
-	}
+    public void addArgument(String arg) {
+       T parsingArg = argParser.parse(arg);
+       if (args.size() + 1 <= argsQuantity
+            && parsingArg != null) {
+           args.add(parsingArg);
+       }
+       if (command instanceof ArgumentCommand<?> argCommand) {
+           argCommand.addArgument(arg);
+       }
 
-	@Override
-	public void removeCommand(Command command) {
-		this.command.removeCommand(command);
-	}
-
-	@Override
-	public Optional<Command> getChildCommand(String commandName) {
-		return this.command.getChildCommand(commandName);
-	}
+       ++currentArgsQuantity;
+    }
 
 }
