@@ -1,4 +1,6 @@
-package command.argument.parser;
+package command.argument.parser.impl;
+
+import command.argument.parser.ArgumentParser;
 
 import java.util.Iterator;
 import java.util.List;

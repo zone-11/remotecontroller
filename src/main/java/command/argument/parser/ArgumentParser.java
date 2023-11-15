@@ -1,5 +1,7 @@
 package command.argument.parser;
 
+import command.argument.parser.impl.CompositeArgumentParser;
+
 import java.util.List;
 
 public interface ArgumentParser<T> {

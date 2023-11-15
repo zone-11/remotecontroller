@@ -1,6 +1,6 @@
-package command.argument.parser;
+package command.argument.parser.impl;
 
-import java.util.Optional;
+import command.argument.parser.ArgumentParser;
 
 public class IntegerArgumentParser implements ArgumentParser<Integer> {
 
