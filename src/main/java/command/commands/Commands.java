@@ -5,7 +5,7 @@ import command.argument.parser.ArgumentParser;
 import command.argument.parser.BooleanArgumentParser;
 import command.argument.parser.IntegerArgumentParser;
 import command.argument.parser.StringArgumentParser;
-import command.commands.builders.ArgumentCommandBuilder;
+import command.builders.ArgumentCommandBuilder;
 
 public class Commands {
 

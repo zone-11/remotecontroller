@@ -1,4 +1,4 @@
-package command.commands.converter;
+package command.converter;
 
 import java.util.List;
 import java.util.ArrayList;

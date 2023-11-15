@@ -1,4 +1,4 @@
-package command.commands.converter;
+package command.converter;
 
 import command.Command;
 import command.commands.ArgumentCommand;
@@ -39,7 +39,7 @@ public class DefaultCommandConverter extends CommandConverter {
         Commands.init();
 		CommandConverter converter = new DefaultCommandConverter();
 
-        converter.parse("print").execute();
+        converter.parse("print this ").execute();
 	}
 }
 

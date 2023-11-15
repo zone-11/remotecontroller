@@ -1,4 +1,4 @@
-package command.commands.builders;
+package command.builders;
 
 import command.Command;
 import command.argument.parser.ArgumentParser;
