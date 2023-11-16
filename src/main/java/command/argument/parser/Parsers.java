@@ -10,4 +10,6 @@ public class Parsers {
     public static final ArgumentParser<Integer> INTEGER_PARSER = new IntegerArgumentParser();
     public static final ArgumentParser<Boolean> BOOLEAN_PARSER = new BooleanArgumentParser();
 
+    private Parsers() {}
+
 }

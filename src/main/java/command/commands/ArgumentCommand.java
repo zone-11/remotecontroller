@@ -32,7 +32,7 @@ public class ArgumentCommand<T> extends CommandDecorator {
            action.accept(args);
         } else if (!(command instanceof ArgumentCommand<?>)
                     && currentArgsQuantity > 0){
-            throw new IllegalArgumentException("command \"" + getName() + "\" does not take this arguments");
+            throw new IllegalArgumentException("command \"" + getName() + "\" does not accept such arguments");
         } else {
             super.execute();
         }

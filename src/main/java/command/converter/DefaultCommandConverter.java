@@ -39,7 +39,7 @@ public class DefaultCommandConverter extends CommandConverter {
         Commands.init();
 		CommandConverter converter = new DefaultCommandConverter();
 
-        converter.parse("print this ").execute();
+        converter.parse("print this   \"say hello to my little friends\"  ").execute();
 	}
 }
 
