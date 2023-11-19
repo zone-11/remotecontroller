@@ -29,13 +29,14 @@ public class ArgumentCommand<T> extends CommandDecorator {
     public void execute() {
         if (args.size() == argsQuantity
             && argsQuantity == currentArgsQuantity) {
-           action.accept(args);
+            action.accept(args);
         } else if (!(command instanceof ArgumentCommand<?>)
                     && currentArgsQuantity > 0){
             throw new IllegalArgumentException("command \"" + this + "\" does not accept such arguments");
         } else {
             super.execute();
         }
+        removeArguments();
     }
 
     public void addArgument(String arg) {
@@ -49,5 +50,13 @@ public class ArgumentCommand<T> extends CommandDecorator {
        }
 
        ++currentArgsQuantity;
+    }
+
+    private void removeArguments() {
+        this.args.clear();
+        currentArgsQuantity = 0;
+        if (command instanceof ArgumentCommand<?> argCommand) {
+            argCommand.removeArguments();
+        }
     }
 }

@@ -39,7 +39,11 @@ public class DefaultCommandConverter extends CommandConverter {
         Commands.init();
 		CommandConverter converter = new DefaultCommandConverter();
 
-        converter.parse("test your self   \"say hello to my little friends\" ").execute();
+        converter.parse("print this \"Hello\" 10").execute();
+        converter.parse("print this \"Hello world\"").execute();
+        converter.parse("print this true").execute();
+        converter.parse("print this").execute();
+        converter.parse("print").execute();
 	}
 }
 
