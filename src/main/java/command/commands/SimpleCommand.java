@@ -1,10 +1,12 @@
 package command.commands;
 
+
 import command.Command;
 
 public class SimpleCommand implements Command {
 
     private String name;
+    protected Command parent;
     private Runnable action = () -> {};
 
     public SimpleCommand(String name) {
@@ -26,4 +28,18 @@ public class SimpleCommand implements Command {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return (parent != null ? parent + " " : "") + name;
+    }
+
+    @Override
+    public void setParent(Command command) {
+
+    }
+
+    @Override
+    public Command getParent() {
+        return null;
+    }
 }

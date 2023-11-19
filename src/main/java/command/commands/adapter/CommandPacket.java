@@ -24,4 +24,13 @@ public class CommandPacket implements Command {
                 .reduce((str1, str2) -> str1 + " " + str2)
                 .orElse("none");
     }
+
+    @Override
+    public void setParent(Command command) {
+    }
+
+    @Override
+    public Command getParent() {
+        return null;
+    }
 }

@@ -1,14 +1,10 @@
 package command;
 
-import command.argument.parser.ArgumentParser;
-import command.commands.ArgumentCommand;
 import command.commands.CompositeCommand;
 import command.commands.SimpleCommand;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public interface Command {
 
@@ -17,6 +13,10 @@ public interface Command {
    void execute();
 
    String getName();
+
+   void setParent(Command command);
+
+   Command getParent();
 
    abstract class Builder<T extends Builder<T>> {
 
@@ -54,11 +54,11 @@ public interface Command {
    }
 
 
-   public static void add(Command command) {
+   static void add(Command command) {
       commands.put(command.getName(), command); 
    }
 
-   public static Optional<Command> findByName(String name) {
+   static Optional<Command> findByName(String name) {
       return Optional.ofNullable(commands.get(name));
    }
 

@@ -11,6 +11,7 @@ public class CompositeCommand extends CommandDecorator {
     public CompositeCommand(Command command, Command child) {
         super(command);
         this.child = child;
+        child.setParent(this);
     }
 
     public Optional<Command> getChildCommand(String commandName) {

@@ -34,6 +34,19 @@ public class Commands {
                         )
                         .build()
         );
+        Command.add(
+                new ArgumentCommandBuilder("test")
+                        .then(
+                                new ArgumentCommandBuilder("your")
+                                        .then(
+                                                new ArgumentCommandBuilder("self")
+                                                        .withArgument(Parsers.BOOLEAN_PARSER, 1, args -> {})
+                                                        .build()
+                                        )
+                                        .build()
+                        )
+                        .build()
+        );
     }
 
 }
