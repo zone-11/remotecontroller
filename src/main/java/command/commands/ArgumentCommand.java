@@ -55,6 +55,10 @@ public class ArgumentCommand<T> extends CommandDecorator {
     private void reset() {
         this.args.clear();
         currentArgsQuantity = 0;
+        if (argParser instanceof ArgumentParser.Resettable resParser) {
+            resParser.reset();
+        }
+
         if (command instanceof ArgumentCommand<?> argCommand) {
             argCommand.reset();
         }

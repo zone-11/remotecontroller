@@ -5,7 +5,7 @@ import command.argument.parser.ArgumentParser;
 import java.util.Iterator;
 import java.util.List;
 
-public class CompositeArgumentParser implements ArgumentParser<Object> {
+public class CompositeArgumentParser implements ArgumentParser<Object>, ArgumentParser.Resettable {
 
     private Iterator<ArgumentParser<?>> parserIterator;
     private List<ArgumentParser<?>> parsers;
@@ -17,11 +17,12 @@ public class CompositeArgumentParser implements ArgumentParser<Object> {
 
     @Override
     public Object parse(String context) {
-        if (!parserIterator.hasNext()) {
-            parserIterator = parsers.listIterator();
-        }
-        return parserIterator.next().parse(context);
+        return parserIterator.hasNext() ? parserIterator.next().parse(context) : null;
     }
 
+    @Override
+    public void reset() {
+       parserIterator = parsers.listIterator();
+    }
 }
 
