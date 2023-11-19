@@ -17,8 +17,8 @@ public class ArgumentCommand<T> extends CommandDecorator {
 
     public ArgumentCommand(Command command,
                            ArgumentParser<T> argParser,
-                           Consumer<List<T>> action,
-                           int argsQuantity) {
+                           int argsQuantity,
+                           Consumer<List<T>> action) {
         super(command);
         this.action = action;
         this.argParser = argParser;
@@ -36,7 +36,7 @@ public class ArgumentCommand<T> extends CommandDecorator {
         } else {
             super.execute();
         }
-        removeArguments();
+        reset();
     }
 
     public void addArgument(String arg) {
@@ -52,11 +52,32 @@ public class ArgumentCommand<T> extends CommandDecorator {
        ++currentArgsQuantity;
     }
 
-    private void removeArguments() {
+    private void reset() {
         this.args.clear();
         currentArgsQuantity = 0;
         if (command instanceof ArgumentCommand<?> argCommand) {
-            argCommand.removeArguments();
+            argCommand.reset();
         }
+    }
+
+
+
+    public static class Builder extends Command.Builder {
+
+        public Builder(String commandName) {
+            super(commandName);
+        }
+
+        public Builder(String commandName, Runnable action) {
+            super(commandName, action);
+        }
+
+        public <T> Builder withArgument(ArgumentParser<T> parser,
+                                                int argsQuntity,
+                                                Consumer<List<T>> action) {
+            command = new ArgumentCommand<T>(command, parser, argsQuntity, action);
+            return this;
+        }
+
     }
 }

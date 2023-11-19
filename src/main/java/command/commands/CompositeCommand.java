@@ -23,4 +23,21 @@ public class CompositeCommand extends CommandDecorator {
         throw new IllegalArgumentException("command " + commandName + " does not exist");
     }
 
+    public static class Builder extends Command.Builder {
+
+        public Builder(String commandName) {
+            super(commandName);
+        }
+
+        public Builder(String commandName, Runnable action) {
+            super(commandName, action);
+        }
+
+        public Builder thenCommand(Command childCommand) {
+            command = new CompositeCommand(command, childCommand);
+            return this;
+        }
+
+    }
+
 }
