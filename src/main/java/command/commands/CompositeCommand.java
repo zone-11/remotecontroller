@@ -38,6 +38,16 @@ public class CompositeCommand extends CommandDecorator {
             return this;
         }
 
+        public Builder thenCommand(String commandName) {
+            command = new CompositeCommand(command, new SimpleCommand(commandName));
+            return this;
+        }
+
+        public Builder thenCommand(String commandName, Runnable action) {
+            command = new CompositeCommand(command, new SimpleCommand(commandName, action));
+            return this;
+        }
+
     }
 
 }
