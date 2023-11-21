@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public class CompositeCommand extends CommandDecorator {
 
-    private Command child;
+    private final Command child;
 
     public CompositeCommand(Command command, Command child) {
         super(command);

@@ -4,8 +4,7 @@ import command.Command;
 
 abstract class CommandDecorator implements Command {
 
-    protected Command command;
-    private Command parent;
+    protected final Command command;
 
     public CommandDecorator(Command command) {
         this.command = command;
@@ -23,19 +22,17 @@ abstract class CommandDecorator implements Command {
 
     @Override
     public void setParent(Command parent) {
-       this.parent = parent;
-       command.setParent(parent);
-
+        command.setParent(parent);
     }
 
     @Override
     public Command getParent() {
-        return parent;
+        return command.getParent();
     }
 
     @Override
     public String toString() {
-        return (parent != null ? parent + " " : "") + getName();
+        return (getParent() != null ? getParent() + " " : "") + getName();
     }
 
 }

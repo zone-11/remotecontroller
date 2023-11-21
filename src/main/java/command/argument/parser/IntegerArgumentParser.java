@@ -1,8 +1,6 @@
-package command.argument.parser.impl;
+package command.argument.parser;
 
-import command.argument.parser.ArgumentParser;
-
-public class IntegerArgumentParser implements ArgumentParser<Integer> {
+class IntegerArgumentParser implements ArgumentParser<Integer> {
 
     @Override
     public Integer parse(String context) {

@@ -5,12 +5,13 @@ import command.Command;
 
 public class SimpleCommand implements Command {
 
-    private String name;
-    protected Command parent;
-    private Runnable action = () -> {};
+    private final String name;
+    private Command parent;
+    private final Runnable action;
 
     public SimpleCommand(String name) {
         this.name = name;
+        this.action = () -> {};
     }
 
     public SimpleCommand(String name, Runnable action) {
@@ -35,11 +36,11 @@ public class SimpleCommand implements Command {
 
     @Override
     public void setParent(Command command) {
-
+        parent = command;
     }
 
     @Override
     public Command getParent() {
-        return null;
+        return parent;
     }
 }

@@ -9,10 +9,10 @@ import java.util.function.Consumer;
 
 public class ArgumentCommand<T> extends CommandDecorator {
 
-    private Consumer<List<T>> action;
-    private ArgumentParser<T> argParser;
-    private List<T> args = new ArrayList<>();
-    private int argsQuantity;
+    private final Consumer<List<T>> action;
+    private final ArgumentParser<T> argParser;
+    private final List<T> args = new ArrayList<>();
+    private final int argsQuantity;
     private int currentArgsQuantity = 0;
 
     public ArgumentCommand(Command command,

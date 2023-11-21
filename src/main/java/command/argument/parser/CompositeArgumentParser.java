@@ -1,11 +1,9 @@
-package command.argument.parser.impl;
-
-import command.argument.parser.ArgumentParser;
+package command.argument.parser;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class CompositeArgumentParser implements ArgumentParser<Object>, ArgumentParser.Resettable {
+class CompositeArgumentParser implements ArgumentParser<Object>, ArgumentParser.Resettable {
 
     private Iterator<ArgumentParser<?>> parserIterator;
     private List<ArgumentParser<?>> parsers;

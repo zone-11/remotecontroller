@@ -1,11 +1,9 @@
-package command.argument.parser.impl;
+package command.argument.parser;
 
-
-import command.argument.parser.ArgumentParser;
 
 import java.util.regex.Pattern;
 
-public class FlagArgumentParser implements ArgumentParser<String> {
+class FlagArgumentParser implements ArgumentParser<String> {
 
 	private static final Pattern SHORT_FLAG = Pattern.compile("-[a-z]{1,3}");
 	private static final Pattern FULL_FLAG = Pattern.compile("--\\w+");

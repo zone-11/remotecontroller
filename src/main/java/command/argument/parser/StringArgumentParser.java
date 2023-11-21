@@ -1,11 +1,9 @@
-package command.argument.parser.impl;
-
-import command.argument.parser.ArgumentParser;
+package command.argument.parser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StringArgumentParser implements ArgumentParser<String> {
+class StringArgumentParser implements ArgumentParser<String> {
 
     private static final Pattern STR_PATTERN = Pattern.compile("\"(.+)\"");
 

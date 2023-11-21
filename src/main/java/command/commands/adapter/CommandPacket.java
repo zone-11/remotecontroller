@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public class CommandPacket implements Command {
 
-    private Collection<Command> collection;
+    private final Collection<Command> collection;
 
     public CommandPacket(Collection<Command> collection) {
         this.collection = collection;
