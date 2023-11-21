@@ -24,5 +24,10 @@ public class CompositeArgumentParser implements ArgumentParser<Object>, Argument
     public void reset() {
        parserIterator = parsers.listIterator();
     }
+
+    @Override
+    public int getArgumentsNumber() {
+       return parsers.size();
+    }
 }
 

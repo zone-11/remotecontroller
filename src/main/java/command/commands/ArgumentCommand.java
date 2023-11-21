@@ -17,12 +17,11 @@ public class ArgumentCommand<T> extends CommandDecorator {
 
     public ArgumentCommand(Command command,
                            ArgumentParser<T> argParser,
-                           int argsQuantity,
                            Consumer<List<T>> action) {
         super(command);
         this.action = action;
         this.argParser = argParser;
-        this.argsQuantity = argsQuantity;
+        this.argsQuantity = argParser.getArgumentsNumber();
     }
 
     @Override
@@ -77,9 +76,8 @@ public class ArgumentCommand<T> extends CommandDecorator {
         }
 
         public <T> Builder withArgument(ArgumentParser<T> parser,
-                                                int argsQuntity,
                                                 Consumer<List<T>> action) {
-            command = new ArgumentCommand<T>(command, parser, argsQuntity, action);
+            command = new ArgumentCommand<T>(command, parser, action);
             return this;
         }
 

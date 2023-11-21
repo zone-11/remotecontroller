@@ -5,8 +5,12 @@ import command.argument.parser.impl.CompositeArgumentParser;
 import java.util.List;
 
 public interface ArgumentParser<T> {
+
     T parse(String context);
 
+    default int getArgumentsNumber() {
+        return 1;
+    }
 
     interface Resettable {
 
