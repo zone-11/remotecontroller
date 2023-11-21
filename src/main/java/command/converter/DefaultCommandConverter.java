@@ -15,8 +15,6 @@ public class DefaultCommandConverter extends CommandConverter {
         Command parent = null;
 		String commandPart = commandParts.get(commandParts.size() - 1);
 
-		System.out.println(commandPart);
-
         if (commandParts.size() > 1) {
             parent = hookParse(commandParts.subList(0, commandParts.size() - 1));
         } else {
@@ -42,7 +40,13 @@ public class DefaultCommandConverter extends CommandConverter {
         converter.parse("print this \"Hello world\"").execute();
         converter.parse("print this \"Goodbye world\" 10").execute();
         converter.parse("print this true").execute();
-        converter.parse("print time").execute();
-	}
+        converter.parse("print this -m \"Hello from Africa\"").execute();
+        converter.parse("print this -t \"Out of Africa\"").execute();
+        converter.parse("print this --title \"Out of Africa\"").execute();
+
+        converter.parse("time").execute();
+        converter.parse("time -s").execute();
+        converter.parse("time -h").execute();
+    }
 }
 
