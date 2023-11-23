@@ -58,6 +58,10 @@ public class Commands {
             })
             .build()
        );
+       Command.add(new ExpressionCommand("remote", command -> {
+           System.out.println("--REMOTE EXECUTION--");
+           command.execute();
+       }));
     }
 
 }

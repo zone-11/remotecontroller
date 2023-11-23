@@ -4,6 +4,7 @@ import command.Command;
 import command.commands.ArgumentCommand;
 import command.commands.Commands;
 import command.commands.CompositeCommand;
+import command.commands.ExpressionCommand;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class DefaultCommandConverter extends CommandConverter {
     .builder()
     .thenParser(ArgumentCommand.Parser::new)
     .thenParser(CompositeCommand.Parser::new)
+    .thenParser(ExpressionCommand.Parser::new)
     .build();
 
     @Override
@@ -43,6 +45,12 @@ public class DefaultCommandConverter extends CommandConverter {
         converter.parse("time").execute();
         converter.parse("time -s").execute();
         converter.parse("time -h").execute();
+
+        converter.parse("remote time").execute();
+        converter.parse("remote print this \"Hello world\"").execute();
+        converter.parse("remote print this \"Hello world\" 10").execute();
+        converter.parse("remote time -s").execute();
+        converter.parse("remote remote").execute();
     }
 }
 
