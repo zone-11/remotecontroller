@@ -3,7 +3,7 @@ package command.argument.parser;
 import java.util.Iterator;
 import java.util.List;
 
-class CompositeArgumentParser implements ArgumentParser<Object>, ArgumentParser.Resettable {
+class CompositeArgumentParser implements ResettableArgumentParser<Object> {
 
     private Iterator<ArgumentParser<?>> parserIterator;
     private List<ArgumentParser<?>> parsers;

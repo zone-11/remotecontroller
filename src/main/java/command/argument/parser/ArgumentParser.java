@@ -10,11 +10,6 @@ public interface ArgumentParser<T> {
         return 1;
     }
 
-    interface Resettable {
-
-        void reset();
-    }
-
     static ArgumentParser<?> of(ArgumentParser<?>... parsers) {
         return new CompositeArgumentParser(List.of(parsers));
     }
