@@ -23,6 +23,34 @@ public class CompositeCommand extends CommandDecorator {
         throw new IllegalArgumentException("command " + commandName + " does not exist");
     }
 
+
+
+    public static class ParentalCommand extends  CommandDecorator {
+
+        private final Command parent;
+
+        public ParentalCommand(Command command, Command parent) {
+            super(command);
+            this.parent = parent;
+        }
+
+        @Override
+        public void execute() {
+            try {
+                super.execute();
+            } catch (RuntimeException e) {
+                throw new RuntimeException("ERROR: command \"" + this + "\"", e);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return parent + " " + command;
+        }
+    }
+
+
+
     public static class Builder extends Command.Builder {
 
         public Builder(String commandName) {

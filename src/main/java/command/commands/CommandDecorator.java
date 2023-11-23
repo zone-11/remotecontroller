@@ -20,19 +20,9 @@ abstract class CommandDecorator implements Command {
         return command.getName();
     }
 
-    @Override
-    public void setParent(Command parent) {
-        command.setParent(parent);
-    }
-
-    @Override
-    public Command getParent() {
-        return command.getParent();
-    }
 
     @Override
     public String toString() {
-        return (getParent() != null ? getParent() + " " : "") + getName();
+        return command.toString();
     }
-
 }

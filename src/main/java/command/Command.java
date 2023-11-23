@@ -4,6 +4,7 @@ import command.commands.SimpleCommand;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.function.Function;
 
 public interface Command {
 
@@ -13,9 +14,16 @@ public interface Command {
 
    String getName();
 
-   void setParent(Command command);
 
-   Command getParent();
+
+   static void add(Command command) {
+      commands.put(command.getName(), command);
+   }
+
+   static Optional<Command> findByName(String name) {
+      return Optional.ofNullable(commands.get(name));
+   }
+
 
    abstract class Builder {
 

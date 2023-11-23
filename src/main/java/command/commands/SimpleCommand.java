@@ -6,7 +6,6 @@ import command.Command;
 public class SimpleCommand implements Command {
 
     private final String name;
-    private Command parent;
     private final Runnable action;
 
     public SimpleCommand(String name) {
@@ -31,16 +30,6 @@ public class SimpleCommand implements Command {
 
     @Override
     public String toString() {
-        return (parent != null ? parent + " " : "") + name;
-    }
-
-    @Override
-    public void setParent(Command command) {
-        parent = command;
-    }
-
-    @Override
-    public Command getParent() {
-        return parent;
+        return name;
     }
 }
