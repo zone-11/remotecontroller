@@ -6,12 +6,11 @@ import java.util.Optional;
 
 public class CompositeCommand extends CommandDecorator {
 
-    private final Command child;
+    private final ParentalCommand child;
 
     public CompositeCommand(Command command, Command child) {
         super(command);
-        this.child = child;
-        child.setParent(this);
+        this.child = new ParentalCommand(child, this);
     }
 
     public Optional<Command> getChildCommand(String commandName) {
@@ -78,4 +77,26 @@ public class CompositeCommand extends CommandDecorator {
 
     }
 
+    //always it is the first converter.
+    public static class Parser extends Command.Parser {
+
+        public Parser() {
+            super();
+        }
+
+        public Parser(Command.Parser nextConverter) {
+            super(nextConverter);
+        }
+
+        @Override
+        protected Command hookConvert(Command command, String str) {
+            if (command instanceof CompositeCommand compositeCommand) {
+                return compositeCommand.getChildCommand(str).orElseThrow();
+            } else if (command instanceof ParentalCommand parentCommand) {
+                nextConverter.convert(parentCommand.command, str);
+                return parentCommand;
+            }
+            return null;
+        }
+    }
 }

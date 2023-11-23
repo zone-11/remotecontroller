@@ -10,25 +10,21 @@ import java.util.List;
 
 public class DefaultCommandConverter extends CommandConverter {
 
+    private static final Command.Parser COMMAND_PARSER = Command.Parser
+    .builder()
+    .thenParser(ArgumentCommand.Parser::new)
+    .thenParser(CompositeCommand.Parser::new)
+    .build();
+
     @Override
     public Command hookParse(List<String> commandParts) {
-        Command parent = null;
-		String commandPart = commandParts.get(commandParts.size() - 1);
-
-        if (commandParts.size() > 1) {
-            parent = hookParse(commandParts.subList(0, commandParts.size() - 1));
-        } else {
-            return Command.findByName(commandPart).orElseThrow();
+        if (commandParts.size() < 2) {
+            return COMMAND_PARSER.convert(null, commandParts.get(0));
         }
+        var parent = hookParse(commandParts.subList(0, commandParts.size() - 1));
+        var commandPart = commandParts.get(commandParts.size() - 1);
 
-        if (parent instanceof ArgumentCommand<?> argCommand) {
-            argCommand.addArgument(commandPart);
-            return argCommand;
-        } else if (parent instanceof CompositeCommand compositeCommand) {
-            return compositeCommand.getChildCommand(commandPart).orElseThrow();
-        } else {
-            throw new IllegalArgumentException("command " + commandPart + " does not exist");
-        }
+        return COMMAND_PARSER.convert(parent, commandPart);
     }
 
 

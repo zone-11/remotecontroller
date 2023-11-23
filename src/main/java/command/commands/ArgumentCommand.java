@@ -2,6 +2,7 @@ package command.commands;
 
 import command.Command;
 import command.argument.parser.ArgumentParser;
+import command.argument.parser.ResettableArgumentParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ArgumentCommand<T> extends CommandDecorator {
             action.accept(args);
         } else if (!(command instanceof ArgumentCommand<?>)
                     && currentArgsQuantity > 0){
-            throw new IllegalArgumentException("command \"" + this + "\" does not accept such arguments");
+            throw new IllegalArgumentException("command " + "\"" + this + "\"" + " does not accept such arguments");
         } else {
             super.execute();
         }
@@ -54,7 +55,7 @@ public class ArgumentCommand<T> extends CommandDecorator {
     private void reset() {
         this.args.clear();
         currentArgsQuantity = 0;
-        if (argParser instanceof ArgumentParser.Resettable resParser) {
+        if (argParser instanceof ResettableArgumentParser<?> resParser) {
             resParser.reset();
         }
 
@@ -64,6 +65,26 @@ public class ArgumentCommand<T> extends CommandDecorator {
     }
 
 
+
+    public static class Parser extends Command.Parser {
+
+        public Parser(Command.Parser nextConverter) {
+            super(nextConverter);
+        }
+
+        public Parser() {
+            super();
+        }
+
+        @Override
+        protected Command hookConvert(Command command, String str) {
+            if (command instanceof ArgumentCommand<?> argCommand) {
+                argCommand.addArgument(str);
+                return argCommand;
+            }
+            return null;
+        }
+    }
 
     public static class Builder extends Command.Builder {
 
