@@ -2,8 +2,6 @@ package command.commands;
 
 import command.Command;
 
-import java.util.Optional;
-
 public class CompositeCommand extends CommandDecorator {
 
     private final ParentalCommand child;
@@ -13,13 +11,14 @@ public class CompositeCommand extends CommandDecorator {
         this.child = new ParentalCommand(child, this);
     }
 
-    public Optional<Command> getChildCommand(String commandName) {
+    public Command getChildCommand(String commandName) {
         if (child.getName().equals(commandName)) {
-            return Optional.ofNullable(child);
+            return child;
         } else if (command instanceof CompositeCommand compositeDecorator) {
             return compositeDecorator.getChildCommand(commandName);
         }
-        throw new IllegalArgumentException("command " + commandName + " does not exist");
+        throw new IllegalArgumentException("command \"%s %s\" does not exist"
+                .formatted(this.toString(), commandName));
     }
 
 
@@ -91,7 +90,7 @@ public class CompositeCommand extends CommandDecorator {
         @Override
         protected Command hookConvert(Command command, String str) {
             if (command instanceof CompositeCommand compositeCommand) {
-                return compositeCommand.getChildCommand(str).orElseThrow();
+                return compositeCommand.getChildCommand(str);
             } else if (command instanceof ParentalCommand parentCommand) {
                 nextConverter.convert(parentCommand.command, str);
                 return parentCommand;

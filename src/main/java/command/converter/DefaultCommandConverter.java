@@ -30,6 +30,7 @@ public class DefaultCommandConverter extends CommandConverter {
 
 
     public static void main(String[] args) {
+
         Commands.init();
 		CommandConverter converter = new DefaultCommandConverter();
 

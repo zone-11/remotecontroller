@@ -2,27 +2,12 @@ package command.commands;
 
 import command.Command;
 
-abstract class CommandDecorator implements Command {
+abstract class CommandDecorator extends AbstractSimpleCommand {
 
     protected final Command command;
 
     public CommandDecorator(Command command) {
+        super(command.getName(), command::execute);
         this.command = command;
-    }
-
-    @Override
-    public void execute() {
-       command.execute();
-    }
-
-    @Override
-    public String getName() {
-        return command.getName();
-    }
-
-
-    @Override
-    public String toString() {
-        return command.toString();
     }
 }

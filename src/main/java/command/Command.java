@@ -10,6 +10,8 @@ public interface Command {
 
    static HashMap<String, Command> commands = new HashMap<>();
 
+
+   //TODO: think about the return value in commands
    void execute();
 
    String getName();
