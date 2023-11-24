@@ -2,7 +2,6 @@ package command.converter;
 
 import command.Command;
 import command.commands.ArgumentCommand;
-import command.commands.Commands;
 import command.commands.CompositeCommand;
 
 import java.util.List;
@@ -29,21 +28,6 @@ public class DefaultCommandConverter extends CommandConverter {
 
 
 
-    public static void main(String[] args) {
-
-        Commands.init();
-		CommandConverter converter = new DefaultCommandConverter();
-
-        converter.parse("print this \"Hello world\"").execute();
-        converter.parse("print this \"Goodbye world\" 10").execute();
-        converter.parse("print this true").execute();
-        converter.parse("print this -m \"Hello from Africa\"").execute();
-        converter.parse("print this -t \"Out of Africa\"").execute();
-        converter.parse("print this --title \"Out of Africa\"").execute();
-
-        converter.parse("time").execute();
-        converter.parse("time -s").execute();
-        converter.parse("time -h").execute();
-    }
+    public static void main(String[] args) {}
 }
 
