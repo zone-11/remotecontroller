@@ -86,21 +86,20 @@ public class ArgumentCommand<T> extends CommandDecorator {
         }
     }
 
-    public static class Builder extends Command.Builder {
+    public static class Builder extends CommandDecorator.Builder {
 
-        public Builder(String commandName) {
-            super(commandName);
+        public Builder(String name) {
+            super(name);
         }
 
-        public Builder(String commandName, Runnable action) {
-            super(commandName, action);
+        public Builder(String name, Runnable action) {
+            super(name, action);
         }
 
-        public <T> Builder withArgument(ArgumentParser<T> parser,
-                                                Consumer<List<T>> action) {
-            command = new ArgumentCommand<T>(command, parser, action);
+        public <T> Builder arguments(ArgumentParser<T> parser,
+                                     Consumer<List<T>> action) {
+            command = new ArgumentCommand<>(command, parser, action);
             return this;
         }
-
     }
 }

@@ -15,9 +15,4 @@ class StringArgumentParser implements ArgumentParser<String> {
         }
         return toReturn;
     }
-
-    public boolean canParse(String context) {
-        return STR_PATTERN.matcher(context).matches();
-    }
-
 }

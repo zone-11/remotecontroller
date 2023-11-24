@@ -10,4 +10,22 @@ abstract class CommandDecorator extends AbstractSimpleCommand {
         super(command.getName(), command::execute);
         this.command = command;
     }
+
+    abstract static class Builder implements Command.Builder {
+
+        protected Command command;
+
+        public Builder(String name) {
+            command = new SimpleCommand(name);
+        }
+
+        public Builder(String name, Runnable action) {
+            command = new SimpleCommand(name, action);
+        }
+
+        @Override
+        public Command build() {
+           return command;
+        }
+    }
 }

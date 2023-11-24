@@ -1,7 +1,5 @@
 package command;
 
-import command.commands.SimpleCommand;
-
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
@@ -27,21 +25,9 @@ public interface Command {
    }
 
 
-   abstract class Builder {
+   interface Builder {
 
-      protected Command command;
-
-      public Builder(String commandName) {
-         command = new SimpleCommand(commandName);
-      }
-
-      public Builder(String commandName, Runnable action) {
-         command = new SimpleCommand(commandName, action);
-      }
-
-      public Command build() {
-         return command;
-      }
+      Command build();
 
    }
 

@@ -49,31 +49,38 @@ public class CompositeCommand extends CommandDecorator {
 
 
 
-    public static class Builder extends Command.Builder {
+    public static class Builder implements Command.Builder {
+
+        private final CompositeCommand command;
 
         public Builder(String commandName) {
-            super(commandName);
+            command = new CompositeCommand(commandName);
         }
 
         public Builder(String commandName, Runnable action) {
-            super(commandName, action);
+            command = new CompositeCommand(commandName, action);
         }
 
         public Builder thenCommand(Command childCommand) {
-            command = new CompositeCommand(command, childCommand);
+            command.subCommands.put(childCommand.getName(),
+                    new ParentalCommand(childCommand, command));
             return this;
         }
 
         public Builder thenCommand(String commandName) {
-            command = new CompositeCommand(command, new SimpleCommand(commandName));
+            thenCommand(new SimpleCommand(commandName));
             return this;
         }
 
         public Builder thenCommand(String commandName, Runnable action) {
-            command = new CompositeCommand(command, new SimpleCommand(commandName, action));
+            thenCommand(new SimpleCommand(commandName, action));
             return this;
         }
 
+        @Override
+        public Command build() {
+           return command;
+        }
     }
 
     //always it is the first converter.
@@ -90,7 +97,7 @@ public class CompositeCommand extends CommandDecorator {
         @Override
         protected Command hookConvert(Command command, String str) {
             if (command instanceof CompositeCommand compositeCommand) {
-                return compositeCommand.getChildCommand(str);
+                return compositeCommand.subCommands.get(str);
             } else if (command instanceof ParentalCommand parentCommand) {
                 nextConverter.convert(parentCommand.command, str);
                 return parentCommand;
