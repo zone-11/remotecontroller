@@ -2,25 +2,20 @@ package command.commands;
 
 import command.Command;
 
-public class CompositeCommand extends CommandDecorator {
+import java.util.HashMap;
 
-    private final ParentalCommand child;
+public class CompositeCommand extends AbstractSimpleCommand {
 
-    public CompositeCommand(Command command, Command child) {
-        super(command);
-        this.child = new ParentalCommand(child, this);
+    private final HashMap<String, ParentalCommand> subCommands =
+        new HashMap<>();
+
+    private CompositeCommand(String name) {
+        super(name, () -> {});
     }
 
-    public Command getChildCommand(String commandName) {
-        if (child.getName().equals(commandName)) {
-            return child;
-        } else if (command instanceof CompositeCommand compositeDecorator) {
-            return compositeDecorator.getChildCommand(commandName);
-        }
-        throw new IllegalArgumentException("command \"%s %s\" does not exist"
-                .formatted(this.toString(), commandName));
+    private CompositeCommand(String name, Runnable action) {
+        super(name, action);
     }
-
 
 
     public static class ParentalCommand extends  CommandDecorator {
