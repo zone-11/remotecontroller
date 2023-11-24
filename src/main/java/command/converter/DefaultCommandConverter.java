@@ -2,6 +2,7 @@ package command.converter;
 
 import command.Command;
 import command.commands.ArgumentCommand;
+import command.commands.Commands;
 import command.commands.CompositeCommand;
 
 import java.util.List;
@@ -28,6 +29,12 @@ public class DefaultCommandConverter extends CommandConverter {
 
 
 
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+        Commands.init();
+        CommandConverter converter = new DefaultCommandConverter();
+
+        converter.parse("cp C:\\Games\\TearDown\\1.2.0\\teardown.cdx " +
+            "C:\\Games\\TearDown\\").execute();
+    }
 }
 

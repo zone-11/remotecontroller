@@ -1,5 +1,7 @@
 package command.argument.parser;
 
+import java.io.File;
+
 public class Parsers {
 
     public static final ArgumentParser<String> STRING_PARSER = new StringArgumentParser();
@@ -12,4 +14,7 @@ public class Parsers {
         return new FlagArgumentParser(flag);
     }
 
+    public static ArgumentParser<File> file(FileType fileType) {
+        return new FilePathArgumentParser(fileType);
+    }
 }
