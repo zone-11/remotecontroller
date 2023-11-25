@@ -33,8 +33,8 @@ public class DefaultCommandConverter extends CommandConverter {
         Commands.init();
         CommandConverter converter = new DefaultCommandConverter();
 
-        converter.parse("cp C:\\Games\\TearDown\\1.2.0\\teardown.cdx " +
-            "C:\\Games\\TearDown\\").execute();
+        converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo -up \"Hello world\"").execute();
     }
 }
 

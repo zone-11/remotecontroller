@@ -1,6 +1,6 @@
 package command.argument.parser;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface ArgumentParser<T> {
 
@@ -10,11 +10,21 @@ public interface ArgumentParser<T> {
         return 1;
     }
 
-    static ArgumentParser<?> of(ArgumentParser<?>... parsers) {
-        return new CompositeArgumentParser(List.of(parsers));
+    @SuppressWarnings("unchecked")
+    static ArgumentParser<Object> of(ArgumentParser<?>... parsers) {
+        return new CompositeArgumentParser<>(
+                Stream.of(parsers)
+                        .map(parser -> (ArgumentParser<Object>)parser)
+                        .toList()
+        );
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> ArgumentParser<T> of2(ArgumentParser<? extends T>... parsers) {
+        return new CompositeArgumentParser<>(
+                Stream.of(parsers)
+                        .map(parser -> (ArgumentParser<T>)parser)
+                        .toList()
+        );
+    }
 }
-
-
-

@@ -3,18 +3,18 @@ package command.argument.parser;
 import java.util.Iterator;
 import java.util.List;
 
-class CompositeArgumentParser implements ResettableArgumentParser<Object> {
+class CompositeArgumentParser<T> implements ResettableArgumentParser<T> {
 
-    private Iterator<ArgumentParser<?>> parserIterator;
-    private List<ArgumentParser<?>> parsers;
+    private Iterator<ArgumentParser<T>> parserIterator;
+    private List<ArgumentParser<T>> parsers;
 
-    public CompositeArgumentParser(List<ArgumentParser<?>> parsers) {
+    public CompositeArgumentParser(List<ArgumentParser<T>> parsers) {
         parserIterator = parsers.listIterator();
         this.parsers = parsers;
     }
 
     @Override
-    public Object parse(String context) {
+    public T parse(String context) {
         return parserIterator.hasNext() ? parserIterator.next().parse(context) : null;
     }
 

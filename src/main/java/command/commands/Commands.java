@@ -41,5 +41,39 @@ public class Commands {
                )
                .build()
         );
+        Command.add(
+            new ArgumentCommand.Builder("mv")
+                .arguments(
+                    ArgumentParser.of(
+                        Parsers.file(FileType.FILE),
+                        Parsers.file(FileType.DIRECTORY)
+                    ),
+                    args -> {
+                        var file = (File)args.get(0);
+                        var dest = (File)args.get(1);
+
+                        if (file.renameTo(dest)) {
+                            System.out.println("Move " + file.getAbsolutePath() + " to " +
+                                dest.getAbsolutePath());
+                        }
+                    }
+                )
+                .build()
+        );
+        Command.add(
+            new ArgumentCommand.Builder("echo")
+                .arguments(Parsers.STRING_PARSER, args -> System.out.println(args.get(0)))
+                .arguments(
+                    ArgumentParser.of(
+                        Parsers.flag("-up"),
+                        Parsers.STRING_PARSER
+                    ),
+                    args -> {
+                        String str = (String)args.get(1);
+                        System.out.println(str.toUpperCase());
+                    }
+                )
+                .build()
+        );
     }
 }
