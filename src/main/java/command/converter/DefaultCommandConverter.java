@@ -4,6 +4,7 @@ import command.Command;
 import command.commands.ArgumentCommand;
 import command.commands.Commands;
 import command.commands.CompositeCommand;
+import command.commands.ExpressionCommand;
 
 import java.util.List;
 

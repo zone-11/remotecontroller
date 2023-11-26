@@ -1,7 +1,6 @@
 package command.commands;
 
 import command.Command;
-import command.commands.adapter.CommandPacket;
 import command.converter.CommandConverter;
 import command.converter.DefaultCommandConverter;
 
@@ -22,7 +21,7 @@ public class ExpressionCommand implements Command {
 
 	@Override
 	public void execute() {
-		var command = (CommandPacket)CONVERTER.parse(commandExpression.toString());
+		var command = CONVERTER.parse(commandExpression.toString());
 
 		command.forEach(innerCommand -> {
 			if (innerCommand instanceof ExpressionCommand) {
@@ -46,7 +45,7 @@ public class ExpressionCommand implements Command {
 		}
 
 		@Override
-		protected Command hookConvert(Command command, String str) {
+		protected Command hookParse(Command command, String str) {
 			if (command instanceof ExpressionCommand expCommand) {
 				expCommand.commandExpression.append(str + " ");
 				return expCommand;
