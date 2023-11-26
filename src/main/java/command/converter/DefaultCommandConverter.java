@@ -19,12 +19,12 @@ public class DefaultCommandConverter extends CommandConverter {
     @Override
     public Command hookParse(List<String> commandParts) {
         if (commandParts.size() < 2) {
-            return COMMAND_PARSER.convert(null, commandParts.get(0));
+            return COMMAND_PARSER.parse(null, commandParts.get(0));
         }
         var parent = hookParse(commandParts.subList(0, commandParts.size() - 1));
         var commandPart = commandParts.get(commandParts.size() - 1);
 
-        return COMMAND_PARSER.convert(parent, commandPart);
+        return COMMAND_PARSER.parse(parent, commandPart);
     }
 
 
@@ -35,6 +35,22 @@ public class DefaultCommandConverter extends CommandConverter {
 
         converter.parse("echo \"Hello world\"").execute();
         converter.parse("echo -up \"Hello world\"").execute();
+        converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo -up \"Hello world\"").execute();
+        converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo -up \"Hello world\"").execute();
+        converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo -up \"Hello world\"").execute();
+        converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo -up \"Hello world\"").execute();
+        converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo -up \"Hello world\"").execute();
+
+        converter.parse("echo -dwn \"Hello world\"").execute();
+        converter.parse("echo -dwn \"Hello world\"").execute();
+        converter.parse("echo -dwn \"Hello world\"").execute();
+
+        converter.parse("echo --reverse \"Hello world\"").execute();
     }
 }
 

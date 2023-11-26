@@ -41,19 +41,19 @@ public interface Command {
          this.nextConverter = nextConverter;
       }
 
-      public Command convert(Command command, String str) {
+      public Command parse(Command command, String str) {
          if (command == null) {
             return Command.findByName(str).orElseThrow();
          }
 
-         var toReturn = hookConvert(command, str);
+         var toReturn = hookParse(command, str);
          if (toReturn == null && nextConverter != null) {
-            toReturn = nextConverter.convert(command, str);
+            toReturn = nextConverter.parse(command, str);
          }
          return toReturn;
       }
 
-      protected abstract Command hookConvert(Command command, String str);
+      protected abstract Command hookParse(Command command, String str);
 
 
 

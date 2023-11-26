@@ -12,9 +12,7 @@ public class ArgumentCommand<T> extends CommandDecorator {
 
     private final Consumer<List<T>> action;
     private final ArgumentParser<T> argParser;
-    private final List<T> args = new ArrayList<>();
-    private final int argsQuantity;
-    private int currentArgsQuantity = 0;
+    private final List<String> strArgs;
 
     public ArgumentCommand(Command command,
                            ArgumentParser<T> argParser,
@@ -22,45 +20,39 @@ public class ArgumentCommand<T> extends CommandDecorator {
         super(command);
         this.action = action;
         this.argParser = argParser;
-        this.argsQuantity = argParser.getArgumentsNumber();
+
+        if (command instanceof ArgumentCommand<?> argCommand) {
+            strArgs = argCommand.strArgs;
+        } else {
+            strArgs = new ArrayList<>();
+        }
     }
 
     @Override
     public void execute() {
-        if (args.size() == argsQuantity
-            && argsQuantity == currentArgsQuantity) {
-            action.accept(args);
-        } else if (!(command instanceof ArgumentCommand<?>)
-                    && currentArgsQuantity > 0){
-            throw new IllegalArgumentException("command " + "\"" + this + "\"" + " does not accept such arguments");
-        } else {
-            super.execute();
+        if (strArgs.size() != argParser.getArgumentsNumber()) {
+            command.execute();
+            return;
         }
+
+        List<T> args = new ArrayList<>();
+        for (String arg : strArgs) {
+           T parsingArg = argParser.parse(arg);
+           if (parsingArg == null) {
+               command.execute();
+               reset();
+               return;
+           }
+           args.add(parsingArg);
+        }
+        action.accept(args);
         reset();
     }
 
-    public void addArgument(String arg) {
-       T parsingArg = argParser.parse(arg);
-       if (args.size() + 1 <= argsQuantity
-            && parsingArg != null) {
-           args.add(parsingArg);
-       }
-       if (command instanceof ArgumentCommand<?> argCommand) {
-           argCommand.addArgument(arg);
-       }
-
-       ++currentArgsQuantity;
-    }
-
     private void reset() {
-        this.args.clear();
-        currentArgsQuantity = 0;
-        if (argParser instanceof ResettableArgumentParser<?> resParser) {
-            resParser.reset();
-        }
-
-        if (command instanceof ArgumentCommand<?> argCommand) {
-            argCommand.reset();
+        strArgs.clear();
+        if (argParser instanceof ResettableArgumentParser<?> resetParser) {
+            resetParser.reset();
         }
     }
 
@@ -77,9 +69,9 @@ public class ArgumentCommand<T> extends CommandDecorator {
         }
 
         @Override
-        protected Command hookConvert(Command command, String str) {
+        protected Command hookParse(Command command, String str) {
             if (command instanceof ArgumentCommand<?> argCommand) {
-                argCommand.addArgument(str);
+                argCommand.strArgs.add(str);
                 return argCommand;
             }
             return null;

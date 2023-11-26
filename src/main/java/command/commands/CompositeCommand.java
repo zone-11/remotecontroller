@@ -90,11 +90,11 @@ public class CompositeCommand extends AbstractSimpleCommand {
         }
 
         @Override
-        protected Command hookConvert(Command command, String str) {
+        protected Command hookParse(Command command, String str) {
             if (command instanceof CompositeCommand compositeCommand) {
                 return compositeCommand.subCommands.get(str);
             } else if (command instanceof ParentalCommand parentCommand) {
-                nextConverter.convert(parentCommand.command, str);
+                nextConverter.parse(parentCommand.command, str);
                 return parentCommand;
             }
             return null;

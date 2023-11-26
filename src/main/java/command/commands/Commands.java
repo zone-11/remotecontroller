@@ -73,6 +73,25 @@ public class Commands {
                         System.out.println(str.toUpperCase());
                     }
                 )
+                .arguments(
+                    ArgumentParser.of(
+                        Parsers.flag("-dwn"),
+                        Parsers.STRING_PARSER
+                    ),
+                    args -> {
+                        System.out.println(((String)args.get(1)).toLowerCase());
+                    }
+                )
+                .arguments(
+                    ArgumentParser.of(
+                        Parsers.flag("--reverse"),
+                        Parsers.STRING_PARSER
+                    ),
+                    args -> {
+                        var builder = new StringBuilder((String)args.get(1));
+                        System.out.println(builder.reverse());
+                    }
+                )
                 .build()
         );
     }
