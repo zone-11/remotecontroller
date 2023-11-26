@@ -35,8 +35,6 @@ public interface Command {
 
       protected Parser nextConverter;
 
-      public Parser() {}
-
       public Parser(Parser nextConverter) {
          this.nextConverter = nextConverter;
       }

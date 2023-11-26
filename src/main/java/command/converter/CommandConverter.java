@@ -1,17 +1,17 @@
 package command.converter;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
-
 import command.Command;
 import command.commands.adapter.CommandPacket;
 import command.separator.CommandSeparator;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
+
 public abstract class CommandConverter {
 
-    public Command parse(String inputLine) {
+    public CommandPacket parse(String inputLine) {
 		return new CommandPacket(createSeparator()
 				.separate(inputLine).stream()
 				.map(this::hookParse)

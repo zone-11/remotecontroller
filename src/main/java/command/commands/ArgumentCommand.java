@@ -64,10 +64,6 @@ public class ArgumentCommand<T> extends CommandDecorator {
             super(nextConverter);
         }
 
-        public Parser() {
-            super();
-        }
-
         @Override
         protected Command hookParse(Command command, String str) {
             if (command instanceof ArgumentCommand<?> argCommand) {

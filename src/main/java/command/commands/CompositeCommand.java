@@ -81,9 +81,6 @@ public class CompositeCommand extends AbstractSimpleCommand {
     //always it is the first converter.
     public static class Parser extends Command.Parser {
 
-        public Parser() {
-            super();
-        }
 
         public Parser(Command.Parser nextConverter) {
             super(nextConverter);

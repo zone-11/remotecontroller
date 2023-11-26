@@ -14,6 +14,7 @@ public class DefaultCommandConverter extends CommandConverter {
     .builder()
     .thenParser(ArgumentCommand.Parser::new)
     .thenParser(CompositeCommand.Parser::new)
+    .thenParser(ExpressionCommand.Parser::new)
     .build();
 
     @Override
