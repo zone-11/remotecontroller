@@ -12,11 +12,11 @@ import java.util.List;
 public class DefaultCommandConverter extends CommandConverter {
 
     private static final Command.Parser COMMAND_PARSER = Command.Parser
-    .builder()
-    .thenParser(ArgumentCommand.Parser::new)
-    .thenParser(CompositeCommand.Parser::new)
-    .thenParser(ExpressionCommand.Parser::new)
-    .build();
+        .builder()
+        .thenParser(ArgumentCommand.Parser::new)
+        .thenParser(ExpressionCommand.Parser::new)
+        .thenParser(CompositeCommand.Parser::new)
+        .build();
 
     @Override
     public Command hookParse(List<String> commandParts) {
@@ -53,6 +53,11 @@ public class DefaultCommandConverter extends CommandConverter {
         converter.parse("echo -dwn \"Hello world\"").execute();
 
         converter.parse("echo --reverse \"Hello world\"").execute();
+
+        converter.parse("remote echo --reverse \"Hello world\"").execute();
+
+        converter.parse("os").execute();
+        converter.parse("remote os").execute();
     }
 }
 

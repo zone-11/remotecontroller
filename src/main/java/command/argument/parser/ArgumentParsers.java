@@ -2,13 +2,13 @@ package command.argument.parser;
 
 import java.io.File;
 
-public class Parsers {
+public class ArgumentParsers {
 
     public static final ArgumentParser<String> STRING_PARSER = new StringArgumentParser();
     public static final ArgumentParser<Integer> INTEGER_PARSER = new IntegerArgumentParser();
     public static final ArgumentParser<Boolean> BOOLEAN_PARSER = new BooleanArgumentParser();
 
-    private Parsers() {}
+    private ArgumentParsers() {}
 
     public static ArgumentParser<String> flag(String flag) {
         return new FlagArgumentParser(flag);

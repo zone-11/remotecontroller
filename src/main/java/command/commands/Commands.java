@@ -3,7 +3,7 @@ package command.commands;
 import command.Command;
 import command.argument.parser.ArgumentParser;
 import command.argument.parser.FileType;
-import command.argument.parser.Parsers;
+import command.argument.parser.ArgumentParsers;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,8 +19,8 @@ public class Commands {
            new ArgumentCommand.Builder("cp")
                .arguments(
                    ArgumentParser.of(
-                       Parsers.file(FileType.FILE),
-                       Parsers.file(FileType.DIRECTORY)
+                       ArgumentParsers.file(FileType.FILE),
+                       ArgumentParsers.file(FileType.DIRECTORY)
                    ),
                    args -> {
                        var file = (File)args.get(0);
@@ -45,12 +45,12 @@ public class Commands {
             new ArgumentCommand.Builder("mv")
                 .arguments(
                     ArgumentParser.of(
-                        Parsers.file(FileType.FILE),
-                        Parsers.file(FileType.DIRECTORY)
+                        ArgumentParsers.file(FileType.FILE),
+                        ArgumentParsers.file(FileType.DIRECTORY)
                     ),
                     args -> {
-                        var file = (File)args.get(0);
-                        var dest = (File)args.get(1);
+                        var file = args.get(0);
+                        var dest = args.get(1);
 
                         if (file.renameTo(dest)) {
                             System.out.println("Move " + file.getAbsolutePath() + " to " +
@@ -62,37 +62,44 @@ public class Commands {
         );
         Command.add(
             new ArgumentCommand.Builder("echo")
-                .arguments(Parsers.STRING_PARSER, args -> System.out.println(args.get(0)))
+                .arguments(ArgumentParsers.STRING_PARSER, args -> System.out.println(args.get(0)))
                 .arguments(
                     ArgumentParser.of(
-                        Parsers.flag("-up"),
-                        Parsers.STRING_PARSER
+                        ArgumentParsers.flag("-up"),
+                        ArgumentParsers.STRING_PARSER
                     ),
                     args -> {
-                        String str = (String)args.get(1);
+                        String str = args.get(1);
                         System.out.println(str.toUpperCase());
                     }
                 )
                 .arguments(
                     ArgumentParser.of(
-                        Parsers.flag("-dwn"),
-                        Parsers.STRING_PARSER
+                        ArgumentParsers.flag("-dwn"),
+                        ArgumentParsers.STRING_PARSER
                     ),
                     args -> {
-                        System.out.println(((String)args.get(1)).toLowerCase());
+                        System.out.println(args.get(1).toLowerCase());
                     }
                 )
                 .arguments(
                     ArgumentParser.of(
-                        Parsers.flag("--reverse"),
-                        Parsers.STRING_PARSER
+                        ArgumentParsers.flag("--reverse"),
+                        ArgumentParsers.STRING_PARSER
                     ),
                     args -> {
-                        var builder = new StringBuilder((String)args.get(1));
+                        var builder = new StringBuilder(args.get(1));
                         System.out.println(builder.reverse());
                     }
                 )
                 .build()
         );
+        Command.add(new ExpressionCommand("remote", command -> {
+            System.out.println("\n--REMOTE EXECUTION--");
+            command.execute();
+        }));
+        Command.add(new SimpleCommand("os", () -> {
+            System.getProperties().entrySet().forEach(System.out::println);
+        }));
     }
 }

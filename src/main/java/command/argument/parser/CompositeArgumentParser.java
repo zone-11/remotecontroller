@@ -5,12 +5,12 @@ import java.util.List;
 
 class CompositeArgumentParser<T> implements ResettableArgumentParser<T> {
 
-    private Iterator<ArgumentParser<T>> parserIterator;
-    private List<ArgumentParser<T>> parsers;
+    private final List<ArgumentParser<? extends T>> parsers;
+    private Iterator<ArgumentParser<? extends T>> parserIterator;
 
-    public CompositeArgumentParser(List<ArgumentParser<T>> parsers) {
-        parserIterator = parsers.listIterator();
+    public CompositeArgumentParser(List<ArgumentParser<? extends T>> parsers) {
         this.parsers = parsers;
+        parserIterator = this.parsers.listIterator();
     }
 
     @Override
