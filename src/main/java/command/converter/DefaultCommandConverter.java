@@ -36,28 +36,13 @@ public class DefaultCommandConverter extends CommandConverter {
         CommandConverter converter = new DefaultCommandConverter();
 
         converter.parse("echo \"Hello world\"").execute();
+        converter.parse("echo \"Hello world\" 5").execute();
         converter.parse("echo -up \"Hello world\"").execute();
-        converter.parse("echo \"Hello world\"").execute();
-        converter.parse("echo -up \"Hello world\"").execute();
-        converter.parse("echo \"Hello world\"").execute();
-        converter.parse("echo -up \"Hello world\"").execute();
-        converter.parse("echo \"Hello world\"").execute();
-        converter.parse("echo -up \"Hello world\"").execute();
-        converter.parse("echo \"Hello world\"").execute();
-        converter.parse("echo -up \"Hello world\"").execute();
-        converter.parse("echo \"Hello world\"").execute();
-        converter.parse("echo -up \"Hello world\"").execute();
-
-        converter.parse("echo -dwn \"Hello world\"").execute();
-        converter.parse("echo -dwn \"Hello world\"").execute();
         converter.parse("echo -dwn \"Hello world\"").execute();
 
-        converter.parse("echo --reverse \"Hello world\"").execute();
-
-        converter.parse("remote echo --reverse \"Hello world\"").execute();
-
-        converter.parse("os").execute();
-        converter.parse("remote os").execute();
+        converter.parse("sys").execute();
+        converter.parse("sys whoami").execute();
+        converter.parse("remote sys whoami").execute();
     }
 }
 

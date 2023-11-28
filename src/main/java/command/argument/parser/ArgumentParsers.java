@@ -4,9 +4,9 @@ import java.io.File;
 
 public class ArgumentParsers {
 
-    public static final ArgumentParser<String> STRING_PARSER = new StringArgumentParser();
-    public static final ArgumentParser<Integer> INTEGER_PARSER = new IntegerArgumentParser();
-    public static final ArgumentParser<Boolean> BOOLEAN_PARSER = new BooleanArgumentParser();
+    public static final ArgumentParser<String> STRING = new StringArgumentParser();
+    public static final ArgumentParser<Integer> INTEGER = new IntegerArgumentParser();
+    public static final ArgumentParser<Boolean> BOOLEAN = new BooleanArgumentParser();
 
     private ArgumentParsers() {}
 
