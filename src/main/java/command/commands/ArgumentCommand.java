@@ -7,6 +7,7 @@ import command.argument.parser.ResettableArgumentParser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ArgumentCommand<T> extends CommandDecorator {
 
@@ -74,19 +75,28 @@ public class ArgumentCommand<T> extends CommandDecorator {
         }
     }
 
-    public static class Builder extends CommandDecorator.Builder {
+    public static class Builder extends Command.Builder<Builder> {
 
-        public Builder(String name) {
-            super(name);
+        private final List<Function<Command, Command>> wrappers = new ArrayList<>();
+
+        public <T> Builder argAction(ArgumentParser<T> parser,
+                                     Consumer<List<T>> argAction) {
+            wrappers.add(command -> new ArgumentCommand(command, parser, argAction));
+            return self();
         }
 
-        public Builder(String name, Runnable action) {
-            super(name, action);
+        @Override
+        protected Command hookBuild(String name, Runnable action) {
+            Command command = Command.simple(name, action);
+            for (Function<Command, Command> wrapper : wrappers) {
+                command = wrapper.apply(command);
+            }
+
+            return command;
         }
 
-        public <T> Builder arguments(ArgumentParser<T> parser,
-                                     Consumer<List<T>> action) {
-            command = new ArgumentCommand<>(command, parser, action);
+        @Override
+        protected Builder self() {
             return this;
         }
     }

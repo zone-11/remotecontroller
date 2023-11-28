@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
 
+//TODO: think about the return value in commands
 public interface Command {
 
-   static HashMap<String, Command> commands = new HashMap<>();
+   HashMap<String, Command> commands = new HashMap<>();
 
 
-   //TODO: think about the return value in commands
    void execute();
 
    String getName();
@@ -24,11 +24,50 @@ public interface Command {
       return Optional.ofNullable(commands.get(name));
    }
 
+   static Command simple(String commandName, Runnable commandAction) {
+      return new Command() {
 
-   interface Builder {
+         private final String name = commandName;
+         private final Runnable action = commandAction;
 
-      Command build();
+         @Override
+         public void execute() {
+            action.run();
+         }
 
+         @Override
+         public String getName() {
+            return name;
+         }
+      };
+   }
+
+
+   abstract class Builder<T extends Builder<T>> {
+
+      protected String name;
+      protected Runnable action = () -> {};
+
+      public final T name(String name) {
+         this.name = name;
+         return self();
+      }
+
+      public final T action(Runnable action) {
+         this.action = action;
+         return self();
+      }
+
+      public final Command build() {
+         if (name != null) {
+            return hookBuild(name, action);
+         }
+         throw new IllegalArgumentException("Command must have the name");
+      }
+
+      protected abstract Command hookBuild(String name, Runnable action);
+
+      protected abstract T self();
    }
 
    abstract class Parser {

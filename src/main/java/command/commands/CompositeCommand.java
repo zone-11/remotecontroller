@@ -2,19 +2,21 @@ package command.commands;
 
 import command.Command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class CompositeCommand extends AbstractSimpleCommand {
 
-    private final HashMap<String, ParentalCommand> subCommands =
-        new HashMap<>();
+    private final HashMap<String, ParentalCommand> subCommands = new HashMap<>();
 
-    private CompositeCommand(String name) {
-        super(name, () -> {});
+    private CompositeCommand(String name, List<Command> subs) {
+        this(name, () -> {}, subs);
     }
 
-    private CompositeCommand(String name, Runnable action) {
+    private CompositeCommand(String name, Runnable action, List<Command> subs) {
         super(name, action);
+        subs.forEach(sub -> subCommands.put(sub.getName(), new ParentalCommand(sub, this)));
     }
 
 
@@ -44,37 +46,33 @@ public class CompositeCommand extends AbstractSimpleCommand {
 
 
 
-    public static class Builder implements Command.Builder {
+    public static class Builder extends Command.Builder<Builder> {
 
-        private final CompositeCommand command;
-
-        public Builder(String commandName) {
-            command = new CompositeCommand(commandName);
-        }
-
-        public Builder(String commandName, Runnable action) {
-            command = new CompositeCommand(commandName, action);
-        }
+        private final List<Command> subs = new ArrayList<>();
 
         public Builder thenCommand(Command childCommand) {
-            command.subCommands.put(childCommand.getName(),
-                    new ParentalCommand(childCommand, command));
+            subs.add(childCommand);
             return this;
         }
 
         public Builder thenCommand(String commandName) {
-            thenCommand(new SimpleCommand(commandName));
+            thenCommand(Command.simple(commandName, () -> {}));
             return this;
         }
 
         public Builder thenCommand(String commandName, Runnable action) {
-            thenCommand(new SimpleCommand(commandName, action));
+            thenCommand(Command.simple(commandName, action));
             return this;
         }
 
         @Override
-        public Command build() {
-           return command;
+        protected Command hookBuild(String name, Runnable action) {
+            return new CompositeCommand(name, action, subs);
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
         }
     }
 
