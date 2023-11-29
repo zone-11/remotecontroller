@@ -1,33 +1,39 @@
 package command.converter;
 
 import command.Command;
-import command.commands.adapter.CommandPacket;
-import command.separator.CommandSeparator;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 public abstract class CommandConverter {
 
-    public CommandPacket parse(String inputLine) {
-		return new CommandPacket(createSeparator()
-				.separate(inputLine).stream()
-				.map(this::hookParse)
-				.toList());
+	private final CommandSeparator separator;
+	private final HashMap<String, Command> commandsContainer = new HashMap<>();
+
+	public CommandConverter(List<? extends Command> commands) {
+		this(CommandSeparator.SPACE, commands);
 	}
 
-	protected abstract Command hookParse(List<String> separateLine);
-
-	protected CommandSeparator createSeparator() {
-		Pattern commandPartPattern = Pattern.compile("\"[^\"]+\"|\\S+");
-		return (inputLine) -> {
-			List<String> list = commandPartPattern.matcher(inputLine).results()
-							.map(MatchResult::group)
-							.toList();
-			return new ArrayList<>(List.of(list));
-		};
+	public CommandConverter(CommandSeparator separator, List<? extends Command> commands) {
+		this.separator = separator;
+		List.copyOf(commands).forEach(command -> commandsContainer.put(command.getName(), command));
 	}
 
+	public Command convert(String inputLine) {
+		return hookConvert(separate(inputLine));
+	}
+
+	protected Optional<Command> findByName(String name) {
+		return Optional.ofNullable(commandsContainer.get(name));
+	}
+
+	private List<String> separate(String inputLine) {
+		return separator.pattern().matcher(inputLine).results()
+			.map(MatchResult::group)
+			.toList();
+	}
+
+	protected abstract Command hookConvert(List<String> separateLine);
 }

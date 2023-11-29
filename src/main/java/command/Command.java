@@ -1,28 +1,15 @@
 package command;
 
-import java.util.HashMap;
-import java.util.Optional;
 import java.util.function.Function;
 
 //TODO: think about the return value in commands
 public interface Command {
-
-   HashMap<String, Command> commands = new HashMap<>();
-
 
    void execute();
 
    String getName();
 
 
-
-   static void add(Command command) {
-      commands.put(command.getName(), command);
-   }
-
-   static Optional<Command> findByName(String name) {
-      return Optional.ofNullable(commands.get(name));
-   }
 
    static Command simple(String commandName, Runnable commandAction) {
       return new Command() {
@@ -79,10 +66,6 @@ public interface Command {
       }
 
       public Command parse(Command command, String str) {
-         if (command == null) {
-            return Command.findByName(str).orElseThrow();
-         }
-
          var toReturn = hookParse(command, str);
          if (toReturn == null && nextConverter != null) {
             toReturn = nextConverter.parse(command, str);

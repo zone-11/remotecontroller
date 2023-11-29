@@ -2,7 +2,6 @@ package command.converter;
 
 import command.Command;
 import command.commands.ArgumentCommand;
-import command.commands.Commands;
 import command.commands.CompositeCommand;
 import command.commands.ExpressionCommand;
 
@@ -18,31 +17,19 @@ public class DefaultCommandConverter extends CommandConverter {
         .thenParser(CompositeCommand.Parser::new)
         .build();
 
+    public DefaultCommandConverter(List<? extends Command> commands) {
+        super(commands);
+    }
+
     @Override
-    public Command hookParse(List<String> commandParts) {
+    public Command hookConvert(List<String> commandParts) {
         if (commandParts.size() < 2) {
-            return COMMAND_PARSER.parse(null, commandParts.get(0));
+            return findByName(commandParts.get(0)).orElseThrow();
         }
-        var parent = hookParse(commandParts.subList(0, commandParts.size() - 1));
+        var parent = hookConvert(commandParts.subList(0, commandParts.size() - 1));
         var commandPart = commandParts.get(commandParts.size() - 1);
 
         return COMMAND_PARSER.parse(parent, commandPart);
-    }
-
-
-
-    public static void main(String[] args) {
-        Commands.init();
-        CommandConverter converter = new DefaultCommandConverter();
-
-        converter.parse("echo \"Hello world\"").execute();
-        converter.parse("echo \"Hello world\" 5").execute();
-        converter.parse("echo -up \"Hello world\"").execute();
-        converter.parse("echo -dwn \"Hello world\"").execute();
-
-        converter.parse("sys").execute();
-        converter.parse("sys whoami").execute();
-        converter.parse("remote sys whoami").execute();
     }
 }
 
