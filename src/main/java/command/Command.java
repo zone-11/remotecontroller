@@ -67,8 +67,12 @@ public interface Command {
 
       public Command parse(Command command, String str) {
          var toReturn = hookParse(command, str);
+
          if (toReturn == null && nextConverter != null) {
             toReturn = nextConverter.parse(command, str);
+         }
+         if (toReturn == null) {
+            throw new IllegalArgumentException("command parser not found");
          }
          return toReturn;
       }

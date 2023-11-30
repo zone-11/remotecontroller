@@ -2,31 +2,29 @@ package command.commands;
 
 import command.Command;
 import command.converter.CommandConverter;
-import command.converter.DefaultCommandConverter;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ExpressionCommand implements Command {
+public class ExpressionCommand<T extends Command> implements Command {
 
 	private final StringBuilder commandExpression = new StringBuilder();
 	private final CommandConverter converter;
 
 	private final String name;
-	private final Consumer<Command> action;
+	private final Consumer<T> action;
 
 	public ExpressionCommand(String name,
-													 Consumer<Command> action,
-													 List<Command> acceptedCommands) {
+													 Consumer<T> action,
+													 List<? extends T> acceptedCommands) {
 		this.name = name;
 		this.action = action;
-		converter = new DefaultCommandConverter(acceptedCommands);
+		converter = new CommandConverter(acceptedCommands);
 	}
 
 	@Override
 	public void execute() {
-		action.accept(converter.convert(commandExpression.toString()));
-		commandExpression.delete(0, commandExpression.length());
+		converter.convert(commandExpression.toString());
 	}
 
 	@Override
