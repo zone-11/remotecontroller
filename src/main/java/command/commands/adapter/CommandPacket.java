@@ -26,4 +26,9 @@ public class CommandPacket extends AbstractSimpleCommand implements Iterable<Com
     public Iterator<Command> iterator() {
        return commandIterator;
     }
+
+  @Override
+  public Parser<?> parser() {
+      throw new IllegalArgumentException();
+  }
 }

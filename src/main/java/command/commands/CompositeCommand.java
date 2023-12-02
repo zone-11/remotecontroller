@@ -5,13 +5,15 @@ import command.Command;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class CompositeCommand extends AbstractSimpleCommand {
 
     private final HashMap<String, ParentalCommand> subCommands = new HashMap<>();
 
     private CompositeCommand(String name, List<Command> subs) {
-        this(name, () -> {}, subs);
+        this(name, () -> {
+        }, subs);
     }
 
     private CompositeCommand(String name, Runnable action, List<Command> subs) {
@@ -19,8 +21,18 @@ public class CompositeCommand extends AbstractSimpleCommand {
         subs.forEach(sub -> subCommands.put(sub.getName(), new ParentalCommand(sub, this)));
     }
 
+    private Optional<Command> subCommand(String name) {
+        return Optional.ofNullable(subCommands.get(name));
+    }
 
-    public static class ParentalCommand extends  CommandDecorator {
+    @Override
+    public Parser<Command> parser() {
+        return context -> subCommand(context)
+          .orElseThrow(() -> new IllegalArgumentException("command not found"));
+    }
+
+
+    public static class ParentalCommand extends CommandDecorator {
 
         private final Command parent;
 
@@ -39,11 +51,18 @@ public class CompositeCommand extends AbstractSimpleCommand {
         }
 
         @Override
+        public Parser<Command> parser() {
+            return context -> {
+                command.parser().parse(context);
+                return this;
+            };
+        }
+
+        @Override
         public String toString() {
             return parent + " " + command;
         }
     }
-
 
 
     public static class Builder extends Command.Builder<Builder> {
@@ -56,12 +75,12 @@ public class CompositeCommand extends AbstractSimpleCommand {
         }
 
         public Builder thenCommand(String commandName) {
-            thenCommand(Command.simple(commandName, () -> {}));
+            thenCommand(commandName, () -> {});
             return this;
         }
 
         public Builder thenCommand(String commandName, Runnable action) {
-            thenCommand(Command.simple(commandName, action));
+            thenCommand(new Command.Simple(commandName, action));
             return this;
         }
 
@@ -75,24 +94,5 @@ public class CompositeCommand extends AbstractSimpleCommand {
             return this;
         }
     }
-
-    //always it is the first converter.
-    public static class Parser extends Command.Parser {
-
-
-        public Parser(Command.Parser nextConverter) {
-            super(nextConverter);
-        }
-
-        @Override
-        protected Command hookParse(Command command, String str) {
-            if (command instanceof CompositeCommand compositeCommand) {
-                return compositeCommand.subCommands.get(str);
-            } else if (command instanceof ParentalCommand parentCommand) {
-                nextConverter.parse(parentCommand.command, str);
-                return parentCommand;
-            }
-            return null;
-        }
-    }
 }
+

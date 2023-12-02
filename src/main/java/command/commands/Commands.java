@@ -31,9 +31,22 @@ public final class Commands {
                     ArgumentParsers.STRING
                   ), args -> System.out.println(args.get(1).toLowerCase())
                 )
+                .argAction(
+                  ArgumentParser.<Object>of(
+                    ArgumentParsers.STRING,
+                    ArgumentParsers.INTEGER
+                  ), args -> {
+                    var str = (String)args.get(0);
+                    int repeatCount = (int)args.get(1);
+
+                    for (int i = 0; i < repeatCount; i++) {
+                      System.out.println(str);
+                    }
+                  }
+                )
                 .build()
             )
-            .thenCommand(Command.simple("os", () -> {
+            .thenCommand(new Command.Simple("os", () -> {
                 System.out.println(System.getProperty("os.name"));
             }))
             .build()

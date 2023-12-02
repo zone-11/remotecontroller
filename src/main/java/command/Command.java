@@ -1,34 +1,15 @@
 package command;
 
-import java.util.function.Function;
-
 //TODO: think about the return value in commands
 public interface Command {
 
    void execute();
-
    String getName();
+   Parser<?> parser();
 
-
-
-   static Command simple(String commandName, Runnable commandAction) {
-      return new Command() {
-
-         private final String name = commandName;
-         private final Runnable action = commandAction;
-
-         @Override
-         public void execute() {
-            action.run();
-         }
-
-         @Override
-         public String getName() {
-            return name;
-         }
-      };
+   interface Parser<T extends Command> {
+      T parse(String context);
    }
-
 
    abstract class Builder<T extends Builder<T>> {
 
@@ -53,53 +34,37 @@ public interface Command {
       }
 
       protected abstract Command hookBuild(String name, Runnable action);
-
       protected abstract T self();
    }
 
-   abstract class Parser {
+   record Simple(String name, Runnable action) implements Command  {
 
-      protected Parser nextConverter;
-
-      public Parser(Parser nextConverter) {
-         this.nextConverter = nextConverter;
+      @Override
+      public Parser<?> parser() {
+         return context -> {
+            throw new IllegalArgumentException("the simple command doesn't take any arguments");
+         };
       }
 
-      public Command parse(Command command, String str) {
-         var toReturn = hookParse(command, str);
-
-         if (toReturn == null && nextConverter != null) {
-            toReturn = nextConverter.parse(command, str);
+      public Simple {
+         if (name == null || action == null) {
+            throw new IllegalArgumentException("illegal command name");
          }
-         if (toReturn == null) {
-            throw new IllegalArgumentException("command parser not found");
-         }
-         return toReturn;
       }
 
-      protected abstract Command hookParse(Command command, String str);
-
-
-
-      public static Builder builder() {
-         return new Builder();
+      @Override
+      public void execute() {
+         action.run();
       }
 
-      public static class Builder {
+      @Override
+      public String getName() {
+         return name;
+      }
 
-         private Parser converter;
-
-         public Builder thenParser(Function<Parser, Parser> func) {
-            converter = func.apply(converter);
-            return this;
-         }
-
-         public Parser build() {
-            return converter;
-         }
+      @Override
+      public String toString() {
+         return name;
       }
    }
-
-
-
 }

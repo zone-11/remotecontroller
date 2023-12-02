@@ -10,7 +10,6 @@ public class ExpressionCommand<T extends Command> implements Command {
 
 	private final StringBuilder commandExpression = new StringBuilder();
 	private final CommandConverter converter;
-
 	private final String name;
 	private final Consumer<T> action;
 
@@ -32,19 +31,11 @@ public class ExpressionCommand<T extends Command> implements Command {
 		return name;
 	}
 
-	public static class Parser extends Command.Parser {
-
-		public Parser(Command.Parser nextConverter) {
-			super(nextConverter);
-		}
-
-		@Override
-		protected Command hookParse(Command command, String str) {
-			if (command instanceof ExpressionCommand expCommand) {
-				expCommand.commandExpression.append(str).append(" ");
-				return expCommand;
-			}
-			return null;
-		}
+	@Override
+	public Parser<?> parser() {
+		return context -> {
+			commandExpression.append(context);
+			return this;
+		};
 	}
 }

@@ -2,6 +2,7 @@ package command.commands;
 
 import command.Command;
 import command.argument.parser.ArgumentParser;
+import command.argument.parser.ArgumentParsers;
 import command.argument.parser.ResettableArgumentParser;
 
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ public class ArgumentCommand<T> extends CommandDecorator {
         for (String arg : strArgs) {
            T parsingArg = argParser.parse(arg);
            if (parsingArg == null) {
+               if (!(command instanceof ArgumentCommand<?>)) {
+                   throw new IllegalArgumentException(command + " doesn't take such arguments");
+               }
                command.execute();
                reset();
                return;
@@ -50,6 +54,14 @@ public class ArgumentCommand<T> extends CommandDecorator {
         reset();
     }
 
+    @Override
+    public Parser<?> parser() {
+        return context -> {
+            strArgs.add(context);
+            return this;
+        };
+    }
+
     private void reset() {
         strArgs.clear();
         if (argParser instanceof ResettableArgumentParser<?> resetParser) {
@@ -57,23 +69,6 @@ public class ArgumentCommand<T> extends CommandDecorator {
         }
     }
 
-
-
-    public static class Parser extends Command.Parser {
-
-        public Parser(Command.Parser nextConverter) {
-            super(nextConverter);
-        }
-
-        @Override
-        protected Command hookParse(Command command, String str) {
-            if (command instanceof ArgumentCommand<?> argCommand) {
-                argCommand.strArgs.add(str);
-                return argCommand;
-            }
-            return null;
-        }
-    }
 
     public static class Builder extends Command.Builder<Builder> {
 
@@ -87,7 +82,7 @@ public class ArgumentCommand<T> extends CommandDecorator {
 
         @Override
         protected Command hookBuild(String name, Runnable action) {
-            Command command = Command.simple(name, action);
+            Command command = new Command.Simple(name, action);
             for (Function<Command, Command> wrapper : wrappers) {
                 command = wrapper.apply(command);
             }
