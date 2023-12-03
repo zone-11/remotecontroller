@@ -20,16 +20,18 @@ public final class Commands {
                 .name("echo")
                 .argAction(ArgumentParsers.STRING, args -> System.out.println(args.get(0)))
                 .argAction(
-                  ArgumentParser.of(
-                    ArgumentParsers.flag("-up"),
-                    ArgumentParsers.STRING
-                  ), args -> System.out.println(args.get(1).toUpperCase())
+                  ArgumentParsers.withFlag(
+                    ArgumentParsers.STRING,
+                    "-up",
+                    String::toUpperCase
+                  ), args -> System.out.println(args.get(0))
                 )
                 .argAction(
-                  ArgumentParser.of(
-                    ArgumentParsers.flag("-dwn"),
-                    ArgumentParsers.STRING
-                  ), args -> System.out.println(args.get(1).toLowerCase())
+                  ArgumentParsers.withFlag(
+                    ArgumentParsers.STRING,
+                    "-dwn",
+                    String::toLowerCase
+                  ), args -> System.out.println(args.get(0))
                 )
                 .argAction(
                   ArgumentParser.<Object>of(

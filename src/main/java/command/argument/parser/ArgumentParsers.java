@@ -1,6 +1,7 @@
 package command.argument.parser;
 
 import java.io.File;
+import java.util.function.Function;
 
 public class ArgumentParsers {
 
@@ -10,8 +11,10 @@ public class ArgumentParsers {
 
     private ArgumentParsers() {}
 
-    public static ArgumentParser<String> flag(String flag) {
-        return new FlagArgumentParser(flag);
+    public static <T> ArgumentParser<T> withFlag(ArgumentParser<T> parser,
+                                                  String flag,
+                                                  Function<T, T> flagAction) {
+        return new FlagArgumentParser<>(parser, flag, flagAction);
     }
 
     public static ArgumentParser<File> file(FileType fileType) {

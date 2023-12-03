@@ -24,7 +24,7 @@ class CompositeArgumentParser<T> implements ResettableArgumentParser<T> {
     }
 
     @Override
-    public int getArgumentsNumber() {
+    public int inputArgsCount() {
        return parsers.size();
     }
 }

@@ -2,7 +2,6 @@ package command.commands;
 
 import command.Command;
 import command.argument.parser.ArgumentParser;
-import command.argument.parser.ArgumentParsers;
 import command.argument.parser.ResettableArgumentParser;
 
 import java.util.ArrayList;
@@ -32,23 +31,25 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
     @Override
     public void execute() {
-        if (strArgs.size() != argParser.getArgumentsNumber()) {
+        if (strArgs.size() != argParser.inputArgsCount()) {
             command.execute();
             return;
         }
 
         List<T> args = new ArrayList<>();
+        int nulls = 0;
         for (String arg : strArgs) {
-           T parsingArg = argParser.parse(arg);
-           if (parsingArg == null) {
-               if (!(command instanceof ArgumentCommand<?>)) {
-                   throw new IllegalArgumentException(command + " doesn't take such arguments");
-               }
-               command.execute();
-               reset();
-               return;
-           }
-           args.add(parsingArg);
+            T parsingArg = argParser.parse(arg);
+            if (parsingArg != null) {
+                args.add(parsingArg);
+            } else {
+                ++nulls;
+                if (nulls > argParser.inputArgsCount() - argParser.outputArgsCount()) {
+                    command.execute();
+                    reset();
+                    return;
+                }
+            }
         }
         action.accept(args);
         reset();

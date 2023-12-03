@@ -6,8 +6,12 @@ public interface ArgumentParser<T> {
 
     T parse(String context);
 
-    default int getArgumentsNumber() {
+    default int inputArgsCount() {
         return 1;
+    }
+
+    default int outputArgsCount() {
+        return inputArgsCount();
     }
 
 
