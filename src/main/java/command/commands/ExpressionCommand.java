@@ -6,24 +6,24 @@ import command.converter.CommandConverter;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ExpressionCommand<T extends Command> implements Command {
+public class ExpressionCommand implements Command {
 
 	private final StringBuilder commandExpression = new StringBuilder();
 	private final CommandConverter converter;
 	private final String name;
-	private final Consumer<T> action;
+	private final Consumer<Command> action;
 
 	public ExpressionCommand(String name,
-													 Consumer<T> action,
-													 List<? extends T> acceptedCommands) {
+													 List<? extends Command> commands,
+													 Consumer<Command> action) {
 		this.name = name;
 		this.action = action;
-		converter = new CommandConverter(acceptedCommands);
+		this.converter = new CommandConverter(commands);
 	}
 
 	@Override
 	public void execute() {
-		converter.convert(commandExpression.toString());
+		action.accept(converter.convert(commandExpression.toString()));
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class ExpressionCommand<T extends Command> implements Command {
 	@Override
 	public Parser<?> parser() {
 		return context -> {
-			commandExpression.append(context);
+			commandExpression.append(context).append(" ");
 			return this;
 		};
 	}
