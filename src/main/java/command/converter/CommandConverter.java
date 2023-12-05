@@ -84,6 +84,7 @@ public class CommandConverter {
 
 		final CommandConverter converter1 = new CommandConverter(Commands.SYSTEM_COMMANDS);
 
+		long before = System.currentTimeMillis();
 		converter.convert("sys echo -up \"Hello world\" --some 5").execute();
 		converter.convert("sys echo \"Hello world\" 5").execute();
 
@@ -91,5 +92,6 @@ public class CommandConverter {
 		converter.convert("sys echo -dwn \"HELLO WOlrD\"").execute();
 		converter.convert("sys echo --reverse \"HELLO WOlrD\"").execute();
 		converter.convert("sys echo -up \"hello world\"").execute();
+		System.out.println("Time complete: " + (System.currentTimeMillis() - before) + " ms");
 	}
 }

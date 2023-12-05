@@ -11,28 +11,31 @@ import java.util.function.Function;
 
 public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
-    private final Consumer<List<T>> action;
-    private final ArgumentParser<T> argParser;
     private final List<String> strArgs;
+    private final Consumer<List<T>> argAction;
+    private final ArgumentParser<T> argParser;
+    private final ArgumentCommand<?> childArgCommand;
 
-    public ArgumentCommand(Command command,
-                           ArgumentParser<T> argParser,
-                           Consumer<List<T>> action) {
+    private ArgumentCommand(Command command,
+                            ArgumentCommand<?> childArgCommand,
+                            List<String> strArgs,
+                            ArgumentParser<T> argParser,
+                            Consumer<List<T>> argAction) {
         super(command);
-        this.action = action;
+        this.childArgCommand = childArgCommand;
         this.argParser = argParser;
-
-        if (command instanceof ArgumentCommand<?> argCommand) {
-            strArgs = argCommand.strArgs;
-        } else {
-            strArgs = new ArrayList<>();
-        }
+        this.argAction = argAction;
+        this.strArgs = strArgs;
     }
 
     @Override
     public void execute() {
+        if (strArgs.size() == 0) {
+            command.execute();
+            return;
+        }
         if (strArgs.size() != argParser.inputArgsCount()) {
-            subExecute();
+            executeChildArgCommand();
             return;
         }
 
@@ -45,13 +48,13 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
             } else {
                 ++nulls;
                 if (nulls > argParser.inputArgsCount() - argParser.outputArgsCount()) {
-                    subExecute();
+                    executeChildArgCommand();
                     reset();
                     return;
                 }
             }
         }
-        action.accept(args);
+        argAction.accept(args);
         reset();
     }
 
@@ -63,9 +66,9 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
         };
     }
 
-    private void subExecute() {
-        if (strArgs.size() == 0 || command instanceof ArgumentCommand) {
-            command.execute();
+    private void executeChildArgCommand() {
+        if (childArgCommand != null) {
+            childArgCommand.execute();
         } else {
             throw new IllegalArgumentException("command doesn't take such arguments");
         }
@@ -85,7 +88,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
         public <T> Builder argAction(ArgumentParser<T> parser,
                                      Consumer<List<T>> argAction) {
-            wrappers.add(command -> new ArgumentCommand(command, parser, argAction));
+            wrappers.add(command -> newInstance(command, parser, argAction));
             return self();
         }
 
@@ -102,6 +105,18 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
         @Override
         protected Builder self() {
             return this;
+        }
+    }
+
+
+    public static <T> ArgumentCommand<T> newInstance(Command command,
+                                                     ArgumentParser<T> parser,
+                                                     Consumer<List<T>> action) {
+        if (command instanceof ArgumentCommand argCommand) {
+            return new ArgumentCommand<>(argCommand.command, argCommand, argCommand.strArgs, parser, action);
+        } else {
+            return new ArgumentCommand<>(command, null, new ArrayList<String>(), parser,
+              action);
         }
     }
 }
