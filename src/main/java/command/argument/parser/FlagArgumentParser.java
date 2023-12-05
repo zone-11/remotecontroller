@@ -1,47 +1,64 @@
 package command.argument.parser;
 
 
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
 class FlagArgumentParser<T> implements ResettableArgumentParser<T> {
 
-	private static final Pattern SHORT_FLAG = Pattern.compile("-[a-z]{1,3}");
-	private static final Pattern FULL_FLAG = Pattern.compile("--\\w+");
-
-	private final String flag;
 	private final ArgumentParser<T> parser;
-	private final Function<T, T> flagAction;
+	private final FlagArgumentParser<T> childFlagParser;
+	private final Flag<T> flag;
 
-	private boolean isFlagDetected;
+	private Detection detection = Detection.WAITING;
 
-	public FlagArgumentParser(ArgumentParser<T> parser,
-														String flag,
-														Function<T, T> flagAction) {
-		if (SHORT_FLAG.matcher(flag).matches() ||
-				FULL_FLAG.matcher(flag).matches()) {
-			this.flag = flag;
-			this.parser = parser;
-			this.flagAction = flagAction;
+	public FlagArgumentParser(ArgumentParser<T> parser, Flag<T> flag) {
+		this.flag = flag;
+		if (parser instanceof FlagArgumentParser<T> flagParser) {
+			this.parser = flagParser.parser;
+			this.childFlagParser = flagParser;
 		} else {
-			throw new IllegalArgumentException("the flag name is illegal");
+			this.parser = parser;
+			this.childFlagParser = null;
 		}
+	}
+
+	private enum Detection {
+		SUCCESS,
+		SUCCESS_CHILD,
+		WAITING,
+		FAILED
 	}
 
 	@Override
 	public T parse(String context) {
-		if (isFlagDetected) {
-			var parsingValue = parser.parse(context);
-			return parsingValue != null ? flagAction.apply(parsingValue) : null;
-		} else if (context.equals(flag)) {
-			isFlagDetected = true;
+		switch (detection) {
+			case WAITING -> {
+				if (context.equals(flag.name())) {
+					detection = Detection.SUCCESS;
+				} else if (childFlagParser != null) {
+					detection = Detection.SUCCESS_CHILD;
+					return childFlagParser.parse(context);
+				} else {
+					detection = Detection.FAILED;
+				}
+				return null;
+			}
+			case SUCCESS -> {
+				var parsingValue = parser.parse(context);
+				return parsingValue != null ? flag.action().apply(parsingValue) : null;
+			}
+			case SUCCESS_CHILD -> {
+				return childFlagParser.parse(context);
+			}
+			default -> {
+				return null;
+			}
 		}
-		return null;
 	}
 
 	@Override
 	public int inputArgsCount() {
-		return parser.inputArgsCount() + 1;
+		return parser instanceof FlagArgumentParser<?>
+			? parser.inputArgsCount()
+			: parser.inputArgsCount() + 1;
 	}
 
 	@Override
@@ -51,6 +68,11 @@ class FlagArgumentParser<T> implements ResettableArgumentParser<T> {
 
 	@Override
 	public void reset() {
-		isFlagDetected = false;
+		detection = Detection.WAITING;
+		if (childFlagParser != null) {
+			childFlagParser.reset();
+		} else if (parser instanceof ResettableArgumentParser<T> resetParser){
+			resetParser.reset();
+		}
 	}
 }

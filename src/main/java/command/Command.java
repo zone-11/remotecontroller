@@ -1,15 +1,14 @@
 package command;
 
+import java.util.function.Function;
+
 //TODO: think about the return value in commands
 public interface Command {
 
    void execute();
    String getName();
-   Parser<?> parser();
+   Function<String, ? extends Command> parser();
 
-   interface Parser<T extends Command> {
-      T parse(String context);
-   }
 
    abstract class Builder<T extends Builder<T>> {
 
@@ -40,7 +39,7 @@ public interface Command {
    record Simple(String name, Runnable action) implements Command  {
 
       @Override
-      public Parser<?> parser() {
+      public Function<String, Simple> parser() {
          return context -> {
             throw new IllegalArgumentException("the simple command doesn't take any arguments");
          };

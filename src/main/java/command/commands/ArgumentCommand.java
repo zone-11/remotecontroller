@@ -32,7 +32,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
     @Override
     public void execute() {
         if (strArgs.size() != argParser.inputArgsCount()) {
-            command.execute();
+            subExecute();
             return;
         }
 
@@ -45,7 +45,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
             } else {
                 ++nulls;
                 if (nulls > argParser.inputArgsCount() - argParser.outputArgsCount()) {
-                    command.execute();
+                    subExecute();
                     reset();
                     return;
                 }
@@ -56,11 +56,19 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
     }
 
     @Override
-    public Parser<?> parser() {
+    public Function<String, ArgumentCommand> parser() {
         return context -> {
             strArgs.add(context);
             return this;
         };
+    }
+
+    private void subExecute() {
+        if (strArgs.size() == 0 || command instanceof ArgumentCommand) {
+            command.execute();
+        } else {
+            throw new IllegalArgumentException("command doesn't take such arguments");
+        }
     }
 
     private void reset() {

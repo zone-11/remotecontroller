@@ -5,6 +5,7 @@ import command.converter.CommandConverter;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ExpressionCommand implements Command {
 
@@ -32,7 +33,7 @@ public class ExpressionCommand implements Command {
 	}
 
 	@Override
-	public Parser<?> parser() {
+	public Function<String, ExpressionCommand> parser() {
 		return context -> {
 			commandExpression.append(context).append(" ");
 			return this;

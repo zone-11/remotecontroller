@@ -42,15 +42,4 @@ public abstract class AbstractSimpleCommand implements Command {
     public int hashCode() {
         return 31 * commandName.hashCode();
     }
-
-    public static class Simple extends AbstractSimpleCommand {
-        public Simple(String commandName, Runnable action) {
-            super(commandName, action);
-        }
-
-        @Override
-        public Parser<?> parser() {
-            return null;
-        }
-    }
 }

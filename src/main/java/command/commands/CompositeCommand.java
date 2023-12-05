@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class CompositeCommand extends AbstractSimpleCommand {
 
@@ -26,13 +27,13 @@ public class CompositeCommand extends AbstractSimpleCommand {
     }
 
     @Override
-    public Parser<Command> parser() {
+    public Function<String, Command> parser() {
         return context -> subCommand(context)
           .orElseThrow(() -> new IllegalArgumentException("command not found"));
     }
 
 
-    public static class ParentalCommand extends CommandDecorator {
+    public static class ParentalCommand extends CommandDecorator<Command> {
 
         private final Command parent;
 
@@ -51,9 +52,9 @@ public class CompositeCommand extends AbstractSimpleCommand {
         }
 
         @Override
-        public Parser<Command> parser() {
+        public Function<String, ParentalCommand> parser() {
             return context -> {
-                command.parser().parse(context);
+                command.parser().apply(context);
                 return this;
             };
         }

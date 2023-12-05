@@ -1,16 +1,33 @@
 package command.argument.parser;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 class CompositeArgumentParser<T> implements ResettableArgumentParser<T> {
 
     private final List<ArgumentParser<? extends T>> parsers;
-    private Iterator<ArgumentParser<? extends T>> parserIterator;
+    private final int inputArgsCount;
+    private final int outputArgsCount;
+
+    private ListIterator<ArgumentParser<? extends T>> parserIterator;
 
     public CompositeArgumentParser(List<ArgumentParser<? extends T>> parsers) {
-        this.parsers = parsers;
-        parserIterator = this.parsers.listIterator();
+        inputArgsCount = parsers.stream()
+          .mapToInt(ArgumentParser::inputArgsCount)
+          .sum();
+        outputArgsCount = parsers.stream()
+          .mapToInt(ArgumentParser::outputArgsCount)
+          .sum();
+
+        List<ArgumentParser<? extends T>> parsersMulti = new ArrayList<>();
+        for (ArgumentParser<? extends T> parser : parsers) {
+            for (int i = 0; i < parser.inputArgsCount(); i++) {
+                parsersMulti.add(parser);
+            }
+        }
+        this.parsers = parsersMulti;
+        parserIterator = parsersMulti.listIterator();
     }
 
     @Override
@@ -25,7 +42,12 @@ class CompositeArgumentParser<T> implements ResettableArgumentParser<T> {
 
     @Override
     public int inputArgsCount() {
-       return parsers.size();
+        return inputArgsCount;
+    }
+
+    @Override
+    public int outputArgsCount() {
+        return outputArgsCount;
     }
 }
 

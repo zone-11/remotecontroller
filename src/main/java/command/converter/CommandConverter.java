@@ -41,7 +41,7 @@ public class CommandConverter {
 		var parent = doConvert(commandParts.subList(0, commandParts.size() - 1));
 		var commandPart = commandParts.get(commandParts.size() - 1);
 
-		return parent.parser().parse(commandPart);
+		return parent.parser().apply(commandPart);
 	}
 
 	private Optional<Command> findByName(String name) {
@@ -84,9 +84,12 @@ public class CommandConverter {
 
 		final CommandConverter converter1 = new CommandConverter(Commands.SYSTEM_COMMANDS);
 
+		converter.convert("sys echo -up \"Hello world\" --some 5").execute();
+		converter.convert("sys echo \"Hello world\" 5").execute();
+
 		converter.convert("sys os").execute();
-		converter.convert("sys echo -up \"Hello world\"").execute();
 		converter.convert("sys echo -dwn \"HELLO WOlrD\"").execute();
-		converter.convert("sys echo -up \"Hello world\"").execute();
+		converter.convert("sys echo --reverse \"HELLO WOlrD\"").execute();
+		converter.convert("sys echo -up \"hello world\"").execute();
 	}
 }

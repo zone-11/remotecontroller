@@ -5,6 +5,7 @@ import command.commands.AbstractSimpleCommand;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Function;
 
 public class CommandPacket extends AbstractSimpleCommand implements Iterable<Command> {
 
@@ -28,7 +29,7 @@ public class CommandPacket extends AbstractSimpleCommand implements Iterable<Com
     }
 
   @Override
-  public Parser<?> parser() {
+  public Function<String, Command> parser() {
       throw new IllegalArgumentException();
   }
 }

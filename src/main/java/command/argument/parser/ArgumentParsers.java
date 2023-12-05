@@ -1,7 +1,6 @@
 package command.argument.parser;
 
 import java.io.File;
-import java.util.function.Function;
 
 public class ArgumentParsers {
 
@@ -11,10 +10,13 @@ public class ArgumentParsers {
 
     private ArgumentParsers() {}
 
-    public static <T> ArgumentParser<T> withFlag(ArgumentParser<T> parser,
-                                                  String flag,
-                                                  Function<T, T> flagAction) {
-        return new FlagArgumentParser<>(parser, flag, flagAction);
+    @SafeVarargs
+    public static <T> ArgumentParser<T> withFlags(ArgumentParser<T> parser, Flag<T>... flags) {
+        FlagArgumentParser<T> flagParser = new FlagArgumentParser<>(parser, flags[0]);
+        for (int i = 1; i < flags.length; i++) {
+            flagParser = new FlagArgumentParser<>(flagParser, flags[i]);
+        }
+        return flagParser;
     }
 
     public static ArgumentParser<File> file(FileType fileType) {
