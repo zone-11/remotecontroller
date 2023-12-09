@@ -4,82 +4,72 @@ import command.Command;
 import command.argument.parser.ArgumentParser;
 import command.argument.parser.ResettableArgumentParser;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
-    private final List<String> strArgs;
-    private final Consumer<List<T>> argAction;
-    private final ArgumentParser<T> argParser;
-    private final ArgumentCommand<?> childArgCommand;
+    private final List<String> stringArguments;
+    private final ArgumentParser<T> argumentParser;
+    private final Consumer<List<T>> handler;
 
     private ArgumentCommand(Command command,
-                            ArgumentCommand<?> childArgCommand,
-                            List<String> strArgs,
-                            ArgumentParser<T> argParser,
-                            Consumer<List<T>> argAction) {
+                            ArgumentParser<T> argumentParser,
+                            Consumer<List<T>> handler)  {
         super(command);
-        this.childArgCommand = childArgCommand;
-        this.argParser = argParser;
-        this.argAction = argAction;
-        this.strArgs = strArgs;
+        this.argumentParser = argumentParser;
+        this.handler = handler;
+
+        stringArguments = command instanceof ArgumentCommand argCommand
+          ? argCommand.stringArguments
+          : new ArrayList<>();
     }
 
     @Override
     public void execute() {
-        if (strArgs.size() == 0) {
-            command.execute();
+        if (stringArguments.size() == 0) {
+            super.execute();
             return;
         }
-        if (strArgs.size() != argParser.inputArgsCount()) {
-            executeChildArgCommand();
-            return;
-        }
+        parseArguments().ifPresentOrElse(handler, () -> tryExecuteChild());
+        stringArguments.clear();
+    }
 
-        List<T> args = new ArrayList<>();
-        int nulls = 0;
-        for (String arg : strArgs) {
-            T parsingArg = argParser.parse(arg);
-            if (parsingArg != null) {
-                args.add(parsingArg);
-            } else {
-                ++nulls;
-                if (nulls > argParser.inputArgsCount() - argParser.outputArgsCount()) {
-                    executeChildArgCommand();
-                    reset();
-                    return;
-                }
-            }
+    private void tryExecuteChild() {
+        if (command instanceof ArgumentCommand argumentCommand) {
+            super.execute();
+        } else {
+            throw new IllegalArgumentException(getName() + " doesn't take such arguments");
         }
-        argAction.accept(args);
-        reset();
+    }
+
+    private Optional<List<T>> parseArguments() {
+        List<T> objArguments = stringArguments.stream()
+          .map(argumentParser::parse)
+          .filter(Objects::nonNull)
+          .toList();
+
+        resetParser();
+        return objArguments.size() == argumentParser.outputArgsCount()
+          ? Optional.of(objArguments)
+          : Optional.empty();
+    }
+
+    private void resetParser() {
+        if (argumentParser instanceof ResettableArgumentParser<?> resetParser) {
+            resetParser.reset();
+        }
     }
 
     @Override
     public Function<String, ArgumentCommand> parser() {
         return context -> {
-            strArgs.add(context);
+            stringArguments.add(context);
             return this;
         };
     }
 
-    private void executeChildArgCommand() {
-        if (childArgCommand != null) {
-            childArgCommand.execute();
-        } else {
-            throw new IllegalArgumentException("command doesn't take such arguments");
-        }
-    }
-
-    private void reset() {
-        strArgs.clear();
-        if (argParser instanceof ResettableArgumentParser<?> resetParser) {
-            resetParser.reset();
-        }
-    }
 
 
     public static class Builder extends Command.Builder<Builder> {
@@ -88,7 +78,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
         public <T> Builder argAction(ArgumentParser<T> parser,
                                      Consumer<List<T>> argAction) {
-            wrappers.add(command -> newInstance(command, parser, argAction));
+            wrappers.add(command -> new ArgumentCommand<>(command, parser, argAction));
             return self();
         }
 
@@ -105,18 +95,6 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
         @Override
         protected Builder self() {
             return this;
-        }
-    }
-
-
-    public static <T> ArgumentCommand<T> newInstance(Command command,
-                                                     ArgumentParser<T> parser,
-                                                     Consumer<List<T>> action) {
-        if (command instanceof ArgumentCommand argCommand) {
-            return new ArgumentCommand<>(argCommand.command, argCommand, argCommand.strArgs, parser, action);
-        } else {
-            return new ArgumentCommand<>(command, null, new ArrayList<String>(), parser,
-              action);
         }
     }
 }
