@@ -21,23 +21,23 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
         this.argumentParser = argumentParser;
         this.handler = handler;
 
-        stringArguments = command instanceof ArgumentCommand argCommand
+        stringArguments = command instanceof ArgumentCommand<?> argCommand
           ? argCommand.stringArguments
           : new ArrayList<>();
     }
 
     @Override
     public void execute() {
-        if (stringArguments.size() == 0) {
+        if (stringArguments.isEmpty()) {
             super.execute();
             return;
         }
-        parseArguments().ifPresentOrElse(handler, () -> tryExecuteChild());
+        parseArguments().ifPresentOrElse(handler, this::tryExecuteChild);
         stringArguments.clear();
     }
 
     private void tryExecuteChild() {
-        if (command instanceof ArgumentCommand argumentCommand) {
+        if (command instanceof ArgumentCommand<?> argumentCommand) {
             super.execute();
         } else {
             throw new IllegalArgumentException(getName() + " doesn't take such arguments");
@@ -63,7 +63,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
     }
 
     @Override
-    public Function<String, ArgumentCommand> parser() {
+    public Function<String, ArgumentCommand<?>> parser() {
         return context -> {
             stringArguments.add(context);
             return this;
