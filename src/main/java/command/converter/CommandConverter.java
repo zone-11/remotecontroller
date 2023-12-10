@@ -49,11 +49,8 @@ public class CommandConverter {
 	}
 
 
-	public static CommandConverter.Builder builder() {
-		return new Builder();
-	}
 
-	private static class Builder {
+	public static class Builder {
 
 		private final List<Command> acceptedCommands = new ArrayList<>();
 		private CommandSeparator separator;
@@ -75,7 +72,7 @@ public class CommandConverter {
 
 
 	public static void main(String[] args) {
-		CommandConverter converter = CommandConverter.builder()
+		CommandConverter converter = new CommandConverter.Builder()
 			.separator(CommandSeparator.SPACE)
 			.using(List.of(new Command.Simple("name", () -> {})))
 			.using(List.of(new Command.Simple("another", () -> {})))
