@@ -1,7 +1,7 @@
 package command.argument.parser;
 
 
-class FlagArgumentParser<T> implements ResettableArgumentParser<T> {
+class FlagArgumentParser<T> extends AbstractArgumentParser<T> {
 
 	private final ArgumentParser<T> parser;
 	private final FlagArgumentParser<T> childFlagParser;
@@ -28,51 +28,28 @@ class FlagArgumentParser<T> implements ResettableArgumentParser<T> {
 	}
 
 	@Override
-	public T parse(String context) {
+	protected T doParse(String stringArg) {
 		switch (detection) {
 			case WAITING -> {
-				if (context.equals(flag.name())) {
+				if (stringArg.equals(flag.name())) {
 					detection = Detection.SUCCESS;
 				} else if (childFlagParser != null) {
 					detection = Detection.SUCCESS_CHILD;
-					return childFlagParser.parse(context);
+					return childFlagParser.doParse(stringArg);
 				} else {
 					detection = Detection.FAILED;
 				}
 				return null;
 			}
 			case SUCCESS -> {
-				var parsingValue = parser.parse(context);
-				return parsingValue != null ? flag.action().apply(parsingValue) : null;
 			}
 			case SUCCESS_CHILD -> {
-				return childFlagParser.parse(context);
+				return childFlagParser.doParse(stringArg);
 			}
 			default -> {
 				return null;
 			}
 		}
-	}
-
-	@Override
-	public int inputArgsCount() {
-		return parser instanceof FlagArgumentParser<?>
-			? parser.inputArgsCount()
-			: parser.inputArgsCount() + 1;
-	}
-
-	@Override
-	public int outputArgsCount() {
-		return parser.outputArgsCount();
-	}
-
-	@Override
-	public void reset() {
-		detection = Detection.WAITING;
-		if (childFlagParser != null) {
-			childFlagParser.reset();
-		} else if (parser instanceof ResettableArgumentParser<T> resetParser){
-			resetParser.reset();
-		}
+		return null;
 	}
 }

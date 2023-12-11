@@ -1,9 +1,9 @@
 package command.argument.parser;
 
-class BooleanArgumentParser implements ArgumentParser<Boolean> {
+class BooleanArgumentParser extends AbstractArgumentParser<Boolean> {
     @Override
-    public Boolean parse(String context) {
-        return context.equals("true") ? Boolean.TRUE :
-                (context.equals("false") ? Boolean.FALSE : null);
+    protected Boolean doParse(String stringArg) {
+        return stringArg.equals("true") ? Boolean.TRUE :
+                (stringArg.equals("false") ? Boolean.FALSE : null);
     }
 }

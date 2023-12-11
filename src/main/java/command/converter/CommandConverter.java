@@ -82,8 +82,8 @@ public class CommandConverter {
 		final CommandConverter converter1 = new CommandConverter(Commands.SYSTEM_COMMANDS);
 
 		long before = System.currentTimeMillis();
-		converter.convert("sys echo -up \"Hello world\" --some 5").execute();
-		converter.convert("sys echo \"Hello world\" 5").execute();
+		converter.convert("sys echo \"Hello world\" --some 5").execute();
+		converter.convert("sys echo -up \"Hello world\" 5").execute();
 
 		converter.convert("sys os").execute();
 		converter.convert("sys echo -dwn \"HELLO WOlrD\"").execute();

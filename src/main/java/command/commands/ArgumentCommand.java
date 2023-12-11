@@ -28,11 +28,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
     @Override
     public void execute() {
-        if (stringArguments.isEmpty()) {
-            super.execute();
-            return;
-        }
-        parseArguments().ifPresentOrElse(handler, this::tryExecuteChild);
+        argumentParser.parse(stringArguments).ifPresentOrElse(handler, this::tryExecuteChild);
         stringArguments.clear();
     }
 
@@ -41,24 +37,6 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
             super.execute();
         } else {
             throw new IllegalArgumentException(getName() + " doesn't take such arguments");
-        }
-    }
-
-    private Optional<List<T>> parseArguments() {
-        List<T> objArguments = stringArguments.stream()
-          .map(argumentParser::parse)
-          .filter(Objects::nonNull)
-          .toList();
-
-        resetParser();
-        return objArguments.size() == argumentParser.outputArgsCount()
-          ? Optional.of(objArguments)
-          : Optional.empty();
-    }
-
-    private void resetParser() {
-        if (argumentParser instanceof ResettableArgumentParser<?> resetParser) {
-            resetParser.reset();
         }
     }
 

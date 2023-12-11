@@ -1,16 +1,14 @@
 package command.argument.parser;
 
-class IntegerArgumentParser implements ArgumentParser<Integer> {
+class IntegerArgumentParser extends AbstractArgumentParser<Integer> {
 
     @Override
-    public Integer parse(String context) {
+    protected Integer doParse(String stringArg) {
         Integer toReturn = null;
         try {
-           toReturn = Integer.parseInt(context);
+            toReturn = Integer.parseInt(stringArg);
         } finally {
             return toReturn;
         }
-
     }
-
 }

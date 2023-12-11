@@ -4,21 +4,24 @@ import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-class FilePathArgumentParser implements ArgumentParser<File> {
+class FilePathArgumentParser extends AbstractArgumentParser<File> {
 
     private final FileType fileType;
+
+    enum FileType {
+        DIRECTORY, FILE
+    }
 
     public FilePathArgumentParser(FileType fileType) {
         this.fileType = fileType;
     }
 
     @Override
-    public File parse(String context) {
+    protected File doParse(String stringArg) {
         File file;
         try {
-            file = Path.of(context).toFile();
+            file = Path.of(stringArg).toFile();
         } catch (InvalidPathException e) {
-            e.printStackTrace();
             return null;
         }
         return switch (fileType) {

@@ -3,51 +3,59 @@ package command.argument.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 
-class CompositeArgumentParser<T> implements ResettableArgumentParser<T> {
+class CompositeArgumentParser<T> implements ArgumentParser<T> {
 
-    private final List<ArgumentParser<? extends T>> parsers;
-    private final int inputArgsCount;
-    private final int outputArgsCount;
+    private final List<AbstractArgumentParser<? extends T>> parsers;
+    private ListIterator<AbstractArgumentParser<? extends T>> parserIterator;
 
-    private ListIterator<ArgumentParser<? extends T>> parserIterator;
+    public CompositeArgumentParser(List<AbstractArgumentParser<? extends T>> parsers) {
+        this.parsers = parsers;
+        this.parserIterator = parsers.listIterator();
+    }
 
-    public CompositeArgumentParser(List<ArgumentParser<? extends T>> parsers) {
-        inputArgsCount = parsers.stream()
-          .mapToInt(ArgumentParser::inputArgsCount)
-          .sum();
-        outputArgsCount = parsers.stream()
-          .mapToInt(ArgumentParser::outputArgsCount)
-          .sum();
+    @Override
+    public Optional<List<T>> parse(List<String> args) {
+        if (parserIterator.hasNext() && !args.isEmpty()) {
+            var parser = parserIterator.next();
+            for (int i = 1; i <= args.size(); i++) {
+                var parsingArgs = parser.parse(args.subList(0, i));
+                if (parsingArgs.isEmpty()) continue;
 
-        List<ArgumentParser<? extends T>> parsersMulti = new ArrayList<>();
-        for (ArgumentParser<? extends T> parser : parsers) {
-            for (int i = 0; i < parser.inputArgsCount(); i++) {
-                parsersMulti.add(parser);
+                var outArguments = new ArrayList<T>(parsingArgs.get());
+                if (parserIterator.hasNext()) {
+                    var recursiveParse = parse(args.subList(i, args.size()));
+                    if (recursiveParse.isPresent()) {
+                        outArguments.addAll(recursiveParse.get());
+                    } else {
+                        break;
+                    }
+                }
+                if (args.size() > 2) break;
+                reset();
+                return Optional.of(outArguments);
             }
         }
-        this.parsers = parsersMulti;
-        parserIterator = parsersMulti.listIterator();
+        reset();
+        return Optional.empty();
     }
 
-    @Override
-    public T parse(String context) {
-        return parserIterator.hasNext() ? parserIterator.next().parse(context) : null;
+    private void reset() {
+        parserIterator = parsers.listIterator();
     }
 
-    @Override
-    public void reset() {
-       parserIterator = parsers.listIterator();
-    }
 
-    @Override
-    public int inputArgsCount() {
-        return inputArgsCount;
-    }
-
-    @Override
-    public int outputArgsCount() {
-        return outputArgsCount;
+    public static void main(String[] args) {
+        ArgumentParser<?> parser = new CompositeArgumentParser<>(
+          List.of(new StringArgumentParser(), new IntegerArgumentParser())
+        );
+        parser.parse(List.of("\"Hello world\"", "26"))
+          .ifPresent(list -> {
+              var str = (String)list.get(0);
+              int num = (int)list.get(1);
+              System.out.println(str + num);
+          });
     }
 }
 

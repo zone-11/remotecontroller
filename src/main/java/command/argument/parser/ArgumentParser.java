@@ -1,23 +1,14 @@
 package command.argument.parser;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ArgumentParser<T> {
 
-    T parse(String context);
-
-    default int inputArgsCount() {
-        return 1;
-    }
-
-    default int outputArgsCount() {
-        return inputArgsCount();
-    }
-
-
+    Optional<List<T>> parse(List<String> args);
 
     @SafeVarargs
-    static <T> ArgumentParser<T> of(ArgumentParser<? extends T>... parsers) {
+    static <T> ArgumentParser<T> of(AbstractArgumentParser<? extends T>... parsers) {
         return new CompositeArgumentParser<>(List.of(parsers));
     }
 }
