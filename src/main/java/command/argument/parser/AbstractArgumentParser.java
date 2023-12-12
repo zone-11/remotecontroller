@@ -1,19 +1,18 @@
 package command.argument.parser;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
 
-  private static final int[] DEFAULT_INPUT_ARGS_COUNTS = {1};
+  private static final List<Integer> DEFAULT_INPUT_ARGS_COUNTS = List.of(1);
   private static final int DEFAULT_OUTPUT_ARGS_COUNT = 1;
 
-  private final int[] possibleInputArgsCounts;
+  private final List<Integer> possibleInputArgsCounts;
   private final int outputArgsCount;
 
-  AbstractArgumentParser(int[] possibleInputArgsCounts, int outputArgsCount) {
+  AbstractArgumentParser(List<Integer> possibleInputArgsCounts, int outputArgsCount) {
     this.possibleInputArgsCounts = possibleInputArgsCounts;
     this.outputArgsCount = outputArgsCount;
   }
@@ -37,14 +36,14 @@ public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
   }
 
   public boolean canParse(int count) {
-    return Arrays.binarySearch(possibleInputArgsCounts, count) != -1;
+    return possibleInputArgsCounts.contains(count);
   }
 
   public int outputArgsCount() {
     return outputArgsCount;
   }
 
-  public int[] inputArgsCounts() {
+  public List<Integer> inputArgsCounts() {
     return possibleInputArgsCounts;
   }
 
