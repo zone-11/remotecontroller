@@ -44,6 +44,10 @@ public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
     return outputArgsCount;
   }
 
+  public int[] inputArgsCounts() {
+    return possibleInputArgsCounts;
+  }
+
   protected abstract T doParse(String stringArg);
 
   // can override this to reset your parser
