@@ -1,52 +1,47 @@
 package command.argument.parser;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 class FlagArgumentParser<T> extends AbstractArgumentParser<T> {
 
-	private final AbstractArgumentParser<T> parser;
-	private final FlagArgumentParser<T> childFlagParser;
-	private final Flag<T> flag;
+	private final AbstractSimpleArgumentParser<T> parser;
+	private final Set<Flag<T>> flags;
 
-	public FlagArgumentParser(AbstractArgumentParser<T> parser, Flag<T> flag) {
-		super(includeToCounts(parser.inputArgsCounts()), parser.outputArgsCount());
+	public FlagArgumentParser(AbstractSimpleArgumentParser<T> parser, Set<Flag<T>> flags) {
+		super(includeToCounts(flags.size()), parser.outputArgsCount());
 
-		this.flag = flag;
-		if (parser instanceof FlagArgumentParser<T> flagParser) {
-			this.parser = flagParser.parser;
-			this.childFlagParser = flagParser;
-		} else {
-			this.parser = parser;
-			this.childFlagParser = null;
-		}
+		this.parser = parser;
+		this.flags = flags;
 	}
 
 	@Override
 	protected List<T> doParse(List<String> args) {
-		var stringFlags = args.subList(0, args.size() - 1);
-		var parsingArgs = parser.parse(List.of(args.get(args.size() - 1)));
+		var argument = parser.parseArg(args.get(args.size() - 1));
+		if (argument == null) return null;
 
-		if (parsingArgs.isEmpty()) return null;
+		for (int i = 0; i < args.size() - 1; i++) {
+			final int finalI = i;
+			var flag = flags.stream()
+				.filter(f -> args.get(finalI).equals(f.name()))
+				.findFirst();
+			if (flag.isEmpty()) return null;
 
-		var parsingArg = parsingArgs.get().get(0);
-		for (String arg : stringFlags) {
-			var flag = parseFlag(arg);
-			if (flag != null) {
-				parsingArg = flag.action().apply(parsingArg);
-			} else {
-				return null;
-			}
+			argument = flag.get().action().apply(argument);
 		}
-		return List.of(parsingArg);
+		return List.of(argument);
 	}
 
-	private Flag<T> parseFlag(String arg) {
-		return arg.equals(flag.name()) ? flag :
-			(childFlagParser != null ? childFlagParser.parseFlag(arg) : null);
-	}
 
-	private static  List<Integer> includeToCounts(List<Integer> counts) {
-		var newList = new ArrayList<>(counts);
-		newList.add(counts.get(counts.size() - 1) + 1);
+	private static  List<Integer> includeToCounts(int counts) {
+		List<Integer> newList = new ArrayList<>();
+
+		int num = 0;
+		for (int i = 0; i <= counts; i++) {
+			newList.add(++num);
+		}
 		return newList;
 	}
 
@@ -56,10 +51,9 @@ class FlagArgumentParser<T> extends AbstractArgumentParser<T> {
 		Flag<String> reverse = new Flag<>("-rev", str -> new StringBuilder(str).reverse().toString());
 
 		FlagArgumentParser<String> stringFlagParser = new FlagArgumentParser<>(
-			new FlagArgumentParser<>(new FlagArgumentParser<>(new StringArgumentParser(),
-				reverse), uppercase), lowercase
+			new StringArgumentParser(), Set.of(uppercase, lowercase, reverse)
 		);
-		stringFlagParser.parse(List.of("-up"))
+		stringFlagParser.parse(List.of("-up", "-rev", "-lw", "\"Hello wold\""))
 			.ifPresent(System.out::println);
 	}
 }
