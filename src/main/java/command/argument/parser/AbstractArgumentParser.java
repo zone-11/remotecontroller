@@ -1,13 +1,8 @@
 package command.argument.parser;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
-
-  private static final List<Integer> DEFAULT_INPUT_ARGS_COUNTS = List.of(1);
-  private static final int DEFAULT_OUTPUT_ARGS_COUNT = 1;
 
   private final List<Integer> possibleInputArgsCounts;
   private final int outputArgsCount;
@@ -17,22 +12,14 @@ public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
     this.outputArgsCount = outputArgsCount;
   }
 
-  AbstractArgumentParser() {
-    this.possibleInputArgsCounts = DEFAULT_INPUT_ARGS_COUNTS;
-    this.outputArgsCount = DEFAULT_OUTPUT_ARGS_COUNT;
-  }
-
   @Override
   public Optional<List<T>> parse(List<String> args) {
     if (args.isEmpty() || !canParse(args.size())) {
       return Optional.empty();
     }
 
-    List<T> list = args.stream()
-      .map(this::doParse)
-      .filter(Objects::nonNull)
-      .toList();
-    return list.size() == outputArgsCount ? Optional.of(list) : Optional.empty();
+    var parsingArgs = doParse(args);
+    return parsingArgs != null ? Optional.of(parsingArgs) : Optional.empty();
   }
 
   public boolean canParse(int count) {
@@ -44,10 +31,10 @@ public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
   }
 
   public List<Integer> inputArgsCounts() {
-    return possibleInputArgsCounts;
+    return List.copyOf(possibleInputArgsCounts);
   }
 
-  protected abstract T doParse(String stringArg);
+  protected abstract List<T> doParse(List<String> args);
 
   // can override this to reset your parser
   protected void reset() {}

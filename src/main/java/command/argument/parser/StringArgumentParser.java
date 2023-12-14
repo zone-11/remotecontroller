@@ -3,13 +3,13 @@ package command.argument.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class StringArgumentParser extends AbstractArgumentParser<String>  {
+class StringArgumentParser extends AbstractSimpleArgumentParser<String>  {
 
     private static final Pattern STR_PATTERN = Pattern.compile("\"(.+)\"");
 
     @Override
-    protected String doParse(String stringArg) {
-        Matcher matcher = STR_PATTERN.matcher(stringArg);
+    public String parseArg(String arg) {
+        Matcher matcher = STR_PATTERN.matcher(arg);
         String toReturn = null;
         if (matcher.matches()) {
             toReturn = matcher.group(1);

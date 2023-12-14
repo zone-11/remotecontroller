@@ -20,11 +20,9 @@ public final class Commands {
         return List.of(
           new CompositeCommand.Builder()
             .name("sys")
-            .action(() -> System.out.println("SYSTEM COMMANDS"))
             .thenCommand(
               new ArgumentCommand.Builder()
                 .name("echo")
-                .argAction(ArgumentParsers.STRING, args -> System.out.println(args.get(0)))
                 .argAction(
                   ArgumentParsers.withFlags(ArgumentParsers.STRING,
                     uppercaseFlag,
@@ -34,25 +32,14 @@ public final class Commands {
                 )
                 .argAction(
                   ArgumentParser.<Object>of(
-                    ArgumentParsers.withFlags(ArgumentParsers.STRING, uppercaseFlag),
-                    ArgumentParsers.withFlags(ArgumentParsers.INTEGER, intFlag)
-                  ), args -> {
-                    var str = (String)args.get(0);
-                    int repeatCount = (int)args.get(1);
-
-                    for (int i = 0; i < repeatCount; i++) {
-                      System.out.println(str);
-                    }
-                  }
-                )
-                .argAction(
-                  ArgumentParser.<Object>of(
-                    ArgumentParsers.STRING,
+                    ArgumentParsers.withFlags(ArgumentParsers.STRING,
+                      uppercaseFlag,
+                      lowercaseFlag,
+                      reverseFlag),
                     ArgumentParsers.INTEGER
                   ), args -> {
                     var str = (String)args.get(0);
                     int repeatCount = (int)args.get(1);
-
                     for (int i = 0; i < repeatCount; i++) {
                       System.out.println(str);
                     }
@@ -60,9 +47,6 @@ public final class Commands {
                 )
                 .build()
             )
-            .thenCommand(new Command.Simple("os", () -> {
-                System.out.println(System.getProperty("os.name"));
-            }))
             .build()
         );
     }

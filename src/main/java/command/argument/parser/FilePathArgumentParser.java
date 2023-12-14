@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-class FilePathArgumentParser extends AbstractArgumentParser<File> {
+class FilePathArgumentParser extends AbstractSimpleArgumentParser<File> {
 
     private final FileType fileType;
 
@@ -17,7 +17,7 @@ class FilePathArgumentParser extends AbstractArgumentParser<File> {
     }
 
     @Override
-    protected File doParse(String stringArg) {
+    public File parseArg(String stringArg) {
         File file;
         try {
             file = Path.of(stringArg).toFile();

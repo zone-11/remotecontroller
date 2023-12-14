@@ -1,9 +1,9 @@
 package command.argument.parser;
 
-class IntegerArgumentParser extends AbstractArgumentParser<Integer> {
+class IntegerArgumentParser extends AbstractSimpleArgumentParser<Integer> {
 
     @Override
-    protected Integer doParse(String stringArg) {
+    public Integer parseArg(String stringArg) {
         Integer toReturn = null;
         try {
             toReturn = Integer.parseInt(stringArg);
