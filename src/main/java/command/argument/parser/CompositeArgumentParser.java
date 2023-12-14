@@ -31,8 +31,7 @@ class CompositeArgumentParser<T> implements ArgumentParser<T> {
                     } else {
                         break;
                     }
-                }
-                if (args.size() > 2) break;
+                } else if (args.size() - i > 0) break;
                 reset();
                 return Optional.of(outArguments);
             }
