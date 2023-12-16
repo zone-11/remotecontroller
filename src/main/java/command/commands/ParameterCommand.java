@@ -1,7 +1,7 @@
 package command.commands;
 
 import command.Command;
-import command.argument.parser.AbstractSimpleArgumentParser;
+import command.argument.parser.AbstractSimpleArgParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +46,13 @@ public class ParameterCommand<T> extends AbstractArgCommand {
   public static class Parameter<T> {
 
     private final String name;
-    private final AbstractSimpleArgumentParser<T> paramValueParser;
+    private final AbstractSimpleArgParser<T> paramValueParser;
     private final Supplier<T> defaultParamValue;
 
     private T value = null;
 
     public Parameter(String name,
-                     AbstractSimpleArgumentParser<T> paramValueParser,
+                     AbstractSimpleArgParser<T> paramValueParser,
                      Supplier<T> defaultParamValue) {
       this.name = name;
       this.paramValueParser = paramValueParser;
@@ -80,7 +80,7 @@ public class ParameterCommand<T> extends AbstractArgCommand {
     private Consumer<Map<String, Object>> paramAction;
 
     public <T> Builder parameter(String name,
-                                AbstractSimpleArgumentParser<T> valueParser,
+                                AbstractSimpleArgParser<T> valueParser,
                                 Supplier<T> defaultValue) {
       parameters.add(new Parameter<>(name, valueParser, defaultValue));
       return this;

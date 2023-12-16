@@ -2,12 +2,12 @@ package command.argument.parser;
 
 import java.util.*;
 
-public abstract class AbstractArgumentParser<T> implements ArgumentParser<T> {
+public abstract class AbstractArgParser<T> implements ArgParser<T> {
 
   private final List<Integer> possibleInputArgsCounts;
   private final int outputArgsCount;
 
-  AbstractArgumentParser(List<Integer> possibleInputArgsCounts, int outputArgsCount) {
+  AbstractArgParser(List<Integer> possibleInputArgsCounts, int outputArgsCount) {
     this.possibleInputArgsCounts = possibleInputArgsCounts;
     this.outputArgsCount = outputArgsCount;
   }

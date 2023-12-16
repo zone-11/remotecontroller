@@ -3,9 +3,9 @@ package command.argument.parser;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class AbstractSimpleArgumentParser<T> extends AbstractArgumentParser<T> {
+public abstract class AbstractSimpleArgParser<T> extends AbstractArgParser<T> {
 
-  AbstractSimpleArgumentParser() {
+  AbstractSimpleArgParser() {
     super(List.of(1), 1);
   }
 
@@ -19,8 +19,8 @@ public abstract class AbstractSimpleArgumentParser<T> extends AbstractArgumentPa
 
 
 
-  public static <T> AbstractSimpleArgumentParser<T> from(Function<String, T> parser) {
-    return new AbstractSimpleArgumentParser<T>() {
+  public static <T> AbstractSimpleArgParser<T> from(Function<String, T> parser) {
+    return new AbstractSimpleArgParser<T>() {
       @Override
       public T parseArg(String arg) {
         return parser.apply(arg);

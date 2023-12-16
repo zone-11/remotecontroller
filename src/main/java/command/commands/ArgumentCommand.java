@@ -1,7 +1,7 @@
 package command.commands;
 
 import command.Command;
-import command.argument.parser.ArgumentParser;
+import command.argument.parser.ArgParser;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -10,11 +10,11 @@ import java.util.function.Function;
 public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
     private final List<String> stringArguments;
-    private final ArgumentParser<T> argumentParser;
+    private final ArgParser<T> argumentParser;
     private final Consumer<List<T>> handler;
 
     private ArgumentCommand(Command command,
-                            ArgumentParser<T> argumentParser,
+                            ArgParser<T> argumentParser,
                             Consumer<List<T>> handler)  {
         super(command);
         this.argumentParser = argumentParser;
@@ -53,7 +53,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
 
         private final List<Function<Command, Command>> wrappers = new ArrayList<>();
 
-        public <T> Builder argAction(ArgumentParser<T> parser,
+        public <T> Builder argAction(ArgParser<T> parser,
                                      Consumer<List<T>> argAction) {
             wrappers.add(command -> new ArgumentCommand<>(command, parser, argAction));
             return self();

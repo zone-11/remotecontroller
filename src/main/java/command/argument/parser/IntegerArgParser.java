@@ -1,6 +1,6 @@
 package command.argument.parser;
 
-class IntegerArgumentParser extends AbstractSimpleArgumentParser<Integer> {
+class IntegerArgParser extends AbstractSimpleArgParser<Integer> {
 
     @Override
     public Integer parseArg(String stringArg) {

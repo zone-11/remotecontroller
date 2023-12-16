@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-class FilePathArgumentParser extends AbstractSimpleArgumentParser<File> {
+class FilePathArgParser extends AbstractSimpleArgParser<File> {
 
     private final FileType fileType;
 
@@ -12,7 +12,7 @@ class FilePathArgumentParser extends AbstractSimpleArgumentParser<File> {
         DIRECTORY, FILE
     }
 
-    public FilePathArgumentParser(FileType fileType) {
+    public FilePathArgParser(FileType fileType) {
         this.fileType = fileType;
     }
 

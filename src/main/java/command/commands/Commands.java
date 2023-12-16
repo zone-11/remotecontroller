@@ -1,8 +1,8 @@
 package command.commands;
 
 import command.Command;
-import command.argument.parser.ArgumentParser;
-import command.argument.parser.ArgumentParsers;
+import command.argument.parser.ArgParser;
+import command.argument.parser.ArgParsers;
 import command.argument.parser.Flag;
 
 import java.util.Calendar;
@@ -25,19 +25,19 @@ public final class Commands {
               new ArgumentCommand.Builder()
                 .name("echo")
                 .argAction(
-                  ArgumentParsers.withFlags(ArgumentParsers.STRING,
+                  ArgParsers.withFlags(ArgParsers.STRING,
                     uppercaseFlag,
                     lowercaseFlag,
                     reverseFlag),
                   args -> System.out.println(args.get(0))
                 )
                 .argAction(
-                  ArgumentParser.<Object>of(
-                    ArgumentParsers.withFlags(ArgumentParsers.STRING,
+                  ArgParser.<Object>of(
+                    ArgParsers.withFlags(ArgParsers.STRING,
                       uppercaseFlag,
                       lowercaseFlag,
                       reverseFlag),
-                    ArgumentParsers.INTEGER
+                    ArgParsers.INTEGER
                   ), args -> {
                     var str = (String)args.get(0);
                     int repeatCount = (int)args.get(1);
@@ -61,8 +61,8 @@ public final class Commands {
               new ParameterCommand.Builder()
                 .name("testparam")
                 .action(() -> System.out.println("TEST COMMAND"))
-                .parameter("str", ArgumentParsers.STRING, () -> "string")
-                .parameter("int", ArgumentParsers.INTEGER, () -> 100)
+                .parameter("str", ArgParsers.STRING, () -> "string")
+                .parameter("int", ArgParsers.INTEGER, () -> 100)
                 .paramAction(map -> {
                   System.out.println("STR: " + map.get("str"));
                   System.out.println("INT: " + map.get("int"));

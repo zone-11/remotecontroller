@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-class FlagArgumentParser<T> extends AbstractArgumentParser<T> {
+class FlagArgParser<T> extends AbstractArgParser<T> {
 
-	private final AbstractSimpleArgumentParser<T> parser;
+	private final AbstractSimpleArgParser<T> parser;
 	private final Set<Flag<T>> flags;
 
-	public FlagArgumentParser(AbstractSimpleArgumentParser<T> parser, Set<Flag<T>> flags) {
+	public FlagArgParser(AbstractSimpleArgParser<T> parser, Set<Flag<T>> flags) {
 		super(includeToCounts(flags.size()), parser.outputArgsCount());
 
 		this.parser = parser;
@@ -50,8 +50,8 @@ class FlagArgumentParser<T> extends AbstractArgumentParser<T> {
 		Flag<String> lowercase = new Flag<>("-lw", String::toLowerCase);
 		Flag<String> reverse = new Flag<>("-rev", str -> new StringBuilder(str).reverse().toString());
 
-		FlagArgumentParser<String> stringFlagParser = new FlagArgumentParser<>(
-			new StringArgumentParser(), Set.of(uppercase, lowercase, reverse)
+		FlagArgParser<String> stringFlagParser = new FlagArgParser<>(
+			new StringArgParser(), Set.of(uppercase, lowercase, reverse)
 		);
 		stringFlagParser.parse(List.of("-up", "-rev", "-lw", "\"Hello wold\""))
 			.ifPresent(System.out::println);

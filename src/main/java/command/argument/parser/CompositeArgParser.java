@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 
-class CompositeArgumentParser<T> implements ArgumentParser<T> {
+class CompositeArgParser<T> implements ArgParser<T> {
 
-    private final List<AbstractArgumentParser<? extends T>> parsers;
-    private ListIterator<AbstractArgumentParser<? extends T>> parserIterator;
+    private final List<AbstractArgParser<? extends T>> parsers;
+    private ListIterator<AbstractArgParser<? extends T>> parserIterator;
 
-    public CompositeArgumentParser(List<AbstractArgumentParser<? extends T>> parsers) {
+    public CompositeArgParser(List<AbstractArgParser<? extends T>> parsers) {
         this.parsers = parsers;
         this.parserIterator = parsers.listIterator();
     }
@@ -46,8 +46,8 @@ class CompositeArgumentParser<T> implements ArgumentParser<T> {
 
 
     public static void main(String[] args) {
-        ArgumentParser<?> parser = new CompositeArgumentParser<>(
-          List.of(new StringArgumentParser(), new IntegerArgumentParser())
+        ArgParser<?> parser = new CompositeArgParser<>(
+          List.of(new StringArgParser(), new IntegerArgParser())
         );
         parser.parse(List.of("\"Hello world\"", "26"))
           .ifPresent(list -> {

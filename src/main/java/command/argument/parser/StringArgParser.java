@@ -3,7 +3,7 @@ package command.argument.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class StringArgumentParser extends AbstractSimpleArgumentParser<String>  {
+class StringArgParser extends AbstractSimpleArgParser<String> {
 
     private static final Pattern STR_PATTERN = Pattern.compile("\"(.+)\"");
 
