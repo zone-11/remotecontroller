@@ -20,7 +20,7 @@ public abstract class AbstractSimpleArgParser<T> extends AbstractArgParser<T> {
 
 
   public static <T> AbstractSimpleArgParser<T> from(Function<String, T> parser) {
-    return new AbstractSimpleArgParser<T>() {
+    return new AbstractSimpleArgParser<>() {
       @Override
       public T parseArg(String arg) {
         return parser.apply(arg);

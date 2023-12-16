@@ -32,7 +32,7 @@ public class ArgumentCommand<T> extends CommandDecorator<Command> {
     }
 
     private void tryExecuteChild() {
-        if (command instanceof ArgumentCommand<?> argumentCommand) {
+        if (command instanceof ArgumentCommand<?>) {
             super.execute();
         } else {
             throw new IllegalArgumentException(getName() + " doesn't take such arguments");

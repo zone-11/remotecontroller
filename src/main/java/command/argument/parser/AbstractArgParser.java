@@ -19,6 +19,7 @@ public abstract class AbstractArgParser<T> implements ArgParser<T> {
     }
 
     var parsingArgs = doParse(args);
+    reset();
     return parsingArgs != null ? Optional.of(parsingArgs) : Optional.empty();
   }
 
