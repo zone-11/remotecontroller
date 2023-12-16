@@ -74,8 +74,6 @@ public class CommandConverter {
 	public static void main(String[] args) {
 		CommandConverter converter = new CommandConverter.Builder()
 			.separator(CommandSeparator.SPACE)
-			.using(List.of(new Command.Simple("name", () -> {})))
-			.using(List.of(new Command.Simple("another", () -> {})))
 			.using(Commands.SYSTEM_COMMANDS)
 			.build();
 
@@ -84,6 +82,10 @@ public class CommandConverter {
 		long before = System.currentTimeMillis();
 		converter.convert("sys echo -up --reverse \"Hello world\"").execute();
 		converter.convert("sys echo -up -dwn --reverse \"Hello world\"").execute();
+		converter.convert("sys whoami").execute();
+		converter.convert("sys os").execute();
+		converter.convert("sys time").execute();
+		converter.convert("sys testparam int 10 str \"Fortnite\"").execute();
 
 		System.out.println("Time complete: " + (System.currentTimeMillis() - before) + " ms");
 	}

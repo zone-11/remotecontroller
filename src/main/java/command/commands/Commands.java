@@ -5,6 +5,7 @@ import command.argument.parser.ArgumentParser;
 import command.argument.parser.ArgumentParsers;
 import command.argument.parser.Flag;
 
+import java.util.Calendar;
 import java.util.List;
 
 public final class Commands {
@@ -45,6 +46,27 @@ public final class Commands {
                     }
                   }
                 )
+                .build()
+            )
+            .thenCommand("whoami", () -> {
+              System.out.println(System.getProperty("user.name"));
+            })
+            .thenCommand("os", () -> {
+              System.out.println(System.getProperty("os.name"));
+            })
+            .thenCommand("time", () -> {
+              System.out.println(Calendar.getInstance().getTime());
+            })
+            .thenCommand(
+              new ParameterCommand.Builder()
+                .name("testparam")
+                .action(() -> System.out.println("TEST COMMAND"))
+                .parameter("str", ArgumentParsers.STRING, () -> "string")
+                .parameter("int", ArgumentParsers.INTEGER, () -> 100)
+                .paramAction(map -> {
+                  System.out.println("STR: " + map.get("str"));
+                  System.out.println("INT: " + map.get("int"));
+                })
                 .build()
             )
             .build()
